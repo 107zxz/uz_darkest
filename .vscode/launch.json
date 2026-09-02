@@ -1,0 +1,32 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "uzdoom",
+            "name": "UZDoom: Attach",
+            "request": "attach",
+            "port": 19021,
+            "projects": [
+                "${workspaceFolder}"
+            ]
+        },
+        {
+            "type": "uzdoom",
+            "name": "UZDoom: Launch",
+            "request": "launch",
+            "gamePath": "/home/amy/repos/UZDoom/build/uzdoom",
+            "cwd": "${workspaceFolder}",
+            "port": 19021,
+            "projects": [
+                "${workspaceFolder}"
+            ],
+            "iwad": "doom2.wad",
+            "configPath": "",
+            "map": "map01",
+            "additionalArgs": []
+        }
+    ]
+}

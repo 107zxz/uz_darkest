@@ -1,0 +1,2 @@
+server int sv_p1fighter = 0;
+server int sv_p2fighter = 0;

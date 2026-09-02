@@ -1,0 +1,31 @@
+GameInfo {
+	PlayerClasses = "Ancestor"
+	StatusBarClass = "BlankBar"
+	
+	
+}
+
+DoomEdNums {
+	12001 = Maple
+	12002 = Fetch
+	12003 = Abbey
+	11002 = GrassDeco
+	11003 = BushDeco
+	11004 = TreelineDeco
+	11005 = MountainDeco
+}
+
+Episode MAP01 {
+	
+}
+
+Skill Default {
+	
+}
+
+DefaultMap {
+	PixelRatio = 1.0
+	Sky1 = "F_SKY1"
+}
+
+Map MAP01 "pee" {}

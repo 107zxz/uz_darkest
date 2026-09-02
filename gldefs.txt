@@ -1,0 +1,7 @@
+Material Texture "textures/uibarsfront.ase" {
+	 shader "shaders/hpbarshader.fp"
+}
+
+Material Texture "textures/uieclipse.ase" {
+// 	 shader "shaders/eclipseshader.fp"
+}

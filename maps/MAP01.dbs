@@ -1,0 +1,97 @@
+type = "Doom Builder Map Settings Configuration";
+gameconfig = "UZDoom_DoomUDMF.cfg";
+strictpatches = 0;
+
+maps
+{
+	
+	MAP01
+	{
+		viewpositiony = -6.145301E-07f;
+		custombrightness = 196;
+		
+		testpostcommand
+		{
+			autocloseonsuccess = true;
+			stderriserror = true;
+			exitcodeiserror = true;
+		}
+		uselongtexturenames = false;
+		overrideceiltexture = false;
+		overridebottomtexture = false;
+		defaultfloortexture = "FLOOR0_1";
+		
+		reloadresourceprecommand
+		{
+			autocloseonsuccess = true;
+			stderriserror = true;
+			exitcodeiserror = true;
+		}
+		viewpositionx = 15.99997f;
+		overridemiddletexture = false;
+		viewscale = 0.8007811f;
+		
+		fieldtypes
+		{
+			
+			thing
+			{
+				flags = 0;
+			}
+		}
+		defaulttoptexture = "STONE2";
+		
+		testprecommand
+		{
+			autocloseonsuccess = true;
+			stderriserror = true;
+			exitcodeiserror = true;
+		}
+		overridetoptexture = false;
+		customceilheight = 128;
+		customfloorheight = 0;
+		defaultwalltexture = "STONE2";
+		overridefloortexture = false;
+		scriptcompiler = "zdoom_acs.cfg";
+		defaultceiltexture = "F_SKY1";
+		defaultbottomtexture = "STONE2";
+		
+		reloadresourcepostcommand
+		{
+			autocloseonsuccess = true;
+			stderriserror = true;
+			exitcodeiserror = true;
+		}
+		overrideceilheight = false;
+		
+		grid
+		{
+			backscalex = 100;
+			gridoriginy = 0;
+			background = "";
+			backoffsety = 0;
+			gridoriginx = 0;
+			backoffsetx = 0;
+			gridrotate = 0;
+			gridsize = 32;
+			backscaley = 100;
+			backsource = 0;
+		}
+		overridebrightness = false;
+		overridefloorheight = false;
+		
+		resources
+		{
+			
+			resource0
+			{
+				type = 1;
+				location = "/home/amy/repos/doommods/uz_darkest";
+				option1 = 0;
+				option2 = 0;
+				notfortesting = 0;
+				requiredarchives = "";
+			}
+		}
+	}
+}

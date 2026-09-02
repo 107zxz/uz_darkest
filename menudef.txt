@@ -1,0 +1,29 @@
+OptionValue "FighterOptions"
+{
+	0, "Abbey"
+	1, "Lilya"
+	2, "Fetch"
+}
+
+OptionMenu "MainMenu"
+{
+	Title "Debug Menu"
+	
+	StaticText "Training Options"
+	Command "Reset Positions", "map *", 1, 1	StaticText ""
+	Option "P1 Character", "sv_p1fighter", "FighterOptions", "", 1
+	Option "P2 Character", "sv_p2fighter", "FighterOptions", "", 1
+	
+	StaticText ""
+	
+	StaticText "Controls"
+	Control "Up", "+forward"
+	Control "Down", "+back"
+	Control "Left", "+moveleft"
+	Control "Right", "+moveright"
+	StaticText ""
+	Control "Light Attack", "+attack"
+	Control "Medium Attack", "+altattack"
+	Control "Heavy Attack", "+use"
+	Control "Special Function", "+reload"
+}
