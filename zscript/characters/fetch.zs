@@ -5,6 +5,7 @@ class Fetch : BaseFighter {
 		FETC A 1;
 		Loop;
 	N5H:
+		
 		FETC BC 3;
 		FETC D 3 {
 			FTranslatedLineTarget victim;
@@ -50,9 +51,9 @@ class Fetch : BaseFighter {
 		Goto IDLE;
 	}
 	
-	override void HandleIdle() {
-		Super.HandleIdle();
-		if (ButtonPressed(BT_ATTACK)) SetStateLabel("N5H");
-		if (ButtonPressed(BT_ALTATTACK)) SetStateLabel("N5M");
-	}
+// 	override void HandleIdle() {
+// 		Super.HandleIdle();
+// 		if (ButtonPressed(BT_ATTACK)) SetStateLabel("N5H");
+// 		if (ButtonPressed(BT_ALTATTACK)) SetStateLabel("N5M");
+// 	}
 }

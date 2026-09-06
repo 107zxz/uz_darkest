@@ -1,7 +1,10 @@
 class SmashPuff : Actor {
 	Default {
-		Scale 0.5;
+		Scale 0.25;
 		+NOGRAVITY;
+		+BRIGHT;
+		+NOINTERACTION;
+		Height 1;
 	}
 
 	States {
@@ -12,9 +15,12 @@ class SmashPuff : Actor {
 			int offsetMult = 1;
 			if (bXFLIP) offsetMult = -1;
 			
-			SetOrigin((Pos.X+8*offsetMult, Pos.Y, Pos.Z-24),false);
+			SetOrigin((Pos.X+8*offsetMult, Pos.Y, Pos.Z-32),false);
+			
+			// Try
+			bXFLIP = random(0,1);
 		}
-		SPUF ABCD 1;
+		SPUF ABCDEFGH 1;
 		Stop;
 	}
 }
