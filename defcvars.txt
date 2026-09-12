@@ -1,0 +1,7 @@
+version 228
+
+// Visual Stuff
+set wipetype 0
+set skill 0
+set vid_aspect 2
+set crosshair 0

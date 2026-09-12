@@ -1,0 +1,5 @@
+IWad {
+	Name = "Sunless Strike"
+	AutoName = "Doom.SunlessStrike"
+	Game = "Doom"
+}

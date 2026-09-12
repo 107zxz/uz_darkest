@@ -63,7 +63,8 @@ extend class BaseFighter {
 			Vel += (selfKnockback.X * (1-Angle / 90),0,selfKnockback.Y);
 			
 // 			Console.Printf("Hit! %d", dmg);
-			cancelTics = dmg*2;
+			// Allow a little extra time for delay cancelling
+			cancelTics = dmg+8;
 		}
 			
 // 			if (Pos.Z == FloorZ) {
@@ -108,11 +109,9 @@ extend class BaseFighter {
 	
 
 		if (ButtonPressed(BT_MOVELEFT)) {
-// 			SetOrigin((Pos.X - 2, Pos.Y, Pos.Z), true);
 			SetStateLabel("WALK");
 		}
 		if (ButtonPressed(BT_MOVERIGHT)) {
-// 			SetOrigin((Pos.X + 2, Pos.Y, Pos.Z), true);
 			SetStateLabel("WALK");
 		}
 		
@@ -121,7 +120,7 @@ extend class BaseFighter {
 		
 		GroundMoves();
 		
-		if (CheckSpecialInput("8") && (Pos.Z == FloorZ)) {
+		if ((ButtonPressed(BT_FORWARD)) && (Pos.Z == FloorZ)) {
 		
 			if (ButtonPressed(BT_MOVELEFT)) Vel.X = -2;
 			if (ButtonPressed(BT_MOVERIGHT)) Vel.X = 2;
@@ -132,7 +131,7 @@ extend class BaseFighter {
 	}
 	
 	void HandleWalk() {
-		GroundMoves();
+		
 		
 		if (!ButtonPressed(BT_MOVELEFT) && !ButtonPressed(BT_MOVERIGHT))
 			SetStateLabel("IDLE");
@@ -146,41 +145,57 @@ extend class BaseFighter {
 		
 		if (ButtonPressed(BT_BACK)) SetStateLabel("CROUCH");
 		
-		if (ButtonPressed(BT_FORWARD) && Pos.Z == FloorZ) {
+		GroundMoves();
+		
+		if ((ButtonPressed(BT_FORWARD)) && Pos.Z == FloorZ) {
 			if (ButtonPressed(BT_MOVELEFT)) Vel.X = -2;
 			if (ButtonPressed(BT_MOVERIGHT)) Vel.X = 2;
 			Vel.Z = 10;
 			SetOrigin((Pos.X,Pos.Y,Pos.Z+1),false);
 			SetStateLabel("JUMP");
 		}
+		
+		
 	}
 	
 	virtual void HandleCrouch() {
-		GroundMoves();
-	
 		if (!ButtonPressed(BT_BACK)) {
 			SetStateLabel("IDLE");
 		}
+		
+		GroundMoves();
 	}
 	
 	virtual void HandleJump() {
-		AirMoves();
+		
 	
 		if (Pos.Z == FloorZ) {
 			Vel.X = 0;
 			SetStateLabel("IDLE");
-		}
+			GroundMoves();
+		} else
+		
+		AirMoves();
 	}
 	
 	virtual void GroundMoves() {
+	
+		if (CheckSpecialInput("236L")) {
+			CancelIfDifferent("N2H");
+			return;
+		}
+		if (CheckSpecialInput("2L")) {CancelIfDifferent("N2P"); return;}
+		if (CheckSpecialInput("2M")) {CancelIfDifferent("N2S"); return;}
+		if (CheckSpecialInput("2H")) {CancelIfDifferent("N2H"); return;}
+		
 		if (ButtonDown("2")) {
-			if (CheckSpecialInput("L")) CancelIfDifferent("N2P");
-			if (CheckSpecialInput("M")) CancelIfDifferent("N2S");
-			if (CheckSpecialInput("H")) CancelIfDifferent("N2H");
+			if (CheckSpecialInput("L")) {CancelIfDifferent("N2P"); return;}
+			if (CheckSpecialInput("M")) {CancelIfDifferent("N2S"); return;}
+			if (CheckSpecialInput("H")) {CancelIfDifferent("N2H"); return;}
 		} else {
-			if (CheckSpecialInput("L")) CancelIfDifferent("N5P");
-			if (CheckSpecialInput("M")) CancelIfDifferent("N5S");
-			if (CheckSpecialInput("H")) CancelIfDifferent("N5H");
+			if (CheckSpecialInput("L")) {CancelIfDifferent("N5P"); return;}
+			if (CheckSpecialInput("M")) {CancelIfDifferent("N5S"); return;}
+			if (CheckSpecialInput("H")) {CancelIfDifferent("N5H"); return;}
 		}
 	}
 	

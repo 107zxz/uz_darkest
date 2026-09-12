@@ -5,6 +5,8 @@ const BT_SPECIAL = BT_RELOAD;
 const BT_UP = BT_FORWARD;
 const BT_DOWN = BT_BACK;
 
+const BT_MOVECANCEL = BT_USER1;
+
 
 // TODO: Clear all BUTTONS from the input queue when a move starts
 
@@ -13,7 +15,7 @@ extend class BaseFighter {
     int bt_right;
     
 //     const BUF_LEN = 70;
-    const BUF_LEN_ACTIONABLE = 16;
+    const BUF_LEN_ACTIONABLE = 32;
     int inputQueue[BUF_LEN_ACTIONABLE];
 
 	void InputPostBeginPlay() {
@@ -21,6 +23,13 @@ extend class BaseFighter {
 	}
 	
 	void InputTick() {
+		bt_left = BT_MOVELEFT;
+		bt_right = BT_MOVERIGHT;
+		if (bXFLIP) {
+			bt_left = BT_MOVERIGHT;
+			bt_right = BT_MOVELEFT;
+		}
+	
 		HandleInput();
 	}
 	
@@ -77,40 +86,36 @@ extend class BaseFighter {
         return ButtonInInput(repr, inputQueue[0]);
     }
 	
+	
 	bool CheckSpecialInput(String repr) {
+	
         int matching = 0;
-        
+
         for (int b = BUF_LEN_ACTIONABLE-2; b >= 0; b--) {
+		
             while (
                 (
                     ButtonInInput(repr.Mid(matching,1), inputQueue[b]) &&
                     !ButtonInInput(repr.Mid(matching,1), inputQueue[b+1])
-                ) || (
-                    repr.Length() > 3 &&
-                    !ButtonInInput(repr.Mid(matching,1), inputQueue[b]) &&
-                    ButtonInInput(repr.Mid(matching,1), inputQueue[b+1])
+// 					inputQueue[b+1] & BT_MOVECANCEL == 0
                 )
-            ) matching += 1;
+            ) {
+				if (inputQueue[b+1] & BT_MOVECANCEL) break;
+				
+				matching += 1;
+				
+			}
             
             if (matching >= repr.Length()) {
+				
+				inputQueue[1] = BT_MOVECANCEL;
+				for (int i = 2;i<BUF_LEN_ACTIONABLE;i++)
+					inputQueue[i] = 0;
+				
+				// Since we've cancelled, no need to keep the window open
+				canceltics = 0;
                 
-                // If we get one of these, we should probably clear the buffer
-                // So we don't freak out, but this would totally fuck up the whole
-                // Kara kancel dynamic. What the fuck do I do?
-                
-                // Lets not clear for normals, but we should for dashes
-                // (e.g. 656)
-
-                // Don't clear for the first two framesMapleKickEffect
-
-//                 if (repr.Length() > 2) {
-                    for (int i = 0; i < BUF_LEN_ACTIONABLE; i++) {
-                        inputQueue[i] |= BT_LIGHT | BT_MEDIUM | BT_HEAVY;
-                    }
-//                 }
-                
-                
-                
+// 				Console.Printf("Found %s!", repr);
                 return true;
             }
         }
@@ -118,5 +123,32 @@ extend class BaseFighter {
         // Special condition, the last DIRECTION should be held instead of pressed
         
         return false;
+    }
+	
+	String buttonString(int buttons) {
+        int leftBtn = BT_MOVELEFT;
+        int rightBtn = BT_MOVERIGHT;
+        if (consoleplayer > 0) {
+            leftBtn = BT_MOVERIGHT;
+            rightBtn = BT_MOVELEFT;
+        }
+
+        String buttonText = "";
+        if (buttons & BT_DOWN) {
+            if (buttons & rightBtn) buttonText = buttonText .. "3";
+            else if (buttons & leftBtn) buttonText = buttonText .. "1";
+            else buttonText = buttonText .. "2";
+        } else if (buttons & BT_UP) {
+            if (buttons & rightBtn) buttonText = buttonText .. "9";
+            else if (buttons & leftBtn) buttonText = buttonText .. "7";
+            else buttonText = buttonText .. "8";
+        } else if (buttons & rightBtn) buttonText = buttonText .. "6";
+        else if (buttons & leftBtn) buttonText = buttonText .. "4";
+        else buttonText = buttonText .. "5";
+        if (buttons & BT_LIGHT) buttonText = buttonText .. "L";
+        if (buttons & BT_MEDIUM) buttonText = buttonText .. "M";
+        if (buttons & BT_HEAVY) buttonText = buttonText .. "H";
+		if (buttons & BT_MOVECANCEL) buttonText = buttonText .. "--------";
+        return buttonText;
     }
 }

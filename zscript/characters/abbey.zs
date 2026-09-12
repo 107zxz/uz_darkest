@@ -27,13 +27,13 @@ class Abbey : BaseFighter {
 	J5S:
 	---- A 1;
 	EBJP A 3;
-	EBJS A 8 HitLine(32,-24,HITSTUN_MEDIUM,'PAIN',(1,2.5));
+	EBJS AAAA 2 HitLine(32,-24,HITSTUN_MEDIUM,'PAIN',(1.5,2.5));
 	Goto JUMP;
 	
 	J5H:
 	---- A 1;
 	EBJP A 4;
-	EBJH A 8 HitLine(64,0,HITSTUN_HEAVY,'PAIN',(3,2.5), (3,2.5));
+	EBJH A 8 HitLine(64,0,HITSTUN_HEAVY,'PAIN',(2,2.5), (3,2.5));
 	Goto JUMP;
 	
 	N5P:
@@ -41,14 +41,14 @@ class Abbey : BaseFighter {
 	EB5P B 1;
 	EB5P B 2 HitLine(32,0,HITSTUN_LIGHT,'PAIN',(0.4,0.8));
 	EB5P C 2;
-	EB5P D 2;
+	EB5P D 8;
 	Goto IDLE;
 	
 	N5S:
 	---- A 1;
 	EB5S B 3;
 	EB5S C 2;
-	EB5S D 3 HitLine(96,0,HITSTUN_MEDIUM,'PAIN',(0.4,0.8));
+	EB5S D 3 HitLine(96,0,HITSTUN_MEDIUM,'PAIN',(2,0.8));
 	EB5S E 2;
 	Goto IDLE;
 	

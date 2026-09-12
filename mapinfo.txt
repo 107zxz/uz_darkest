@@ -2,7 +2,16 @@ GameInfo {
 	PlayerClasses = "Ancestor"
 	StatusBarClass = "BlankBar"
 	
+	titlepage = "TITLEPIC"
 	
+	
+	menufontcolor_title = "RED"
+    menufontcolor_label = "RED"
+    menufontcolor_value = "GRAY"
+    menufontcolor_action = "GRAY"
+    menufontcolor_header = "GOLD"
+    menufontcolor_highlight = "YELLOW"
+    menufontcolor_selection = "BRICK"
 }
 
 DoomEdNums {
@@ -20,7 +29,7 @@ Episode MAP01 {
 }
 
 Skill Default {
-	
+	SpawnFilter = 1
 }
 
 DefaultMap {

@@ -1,15 +1,18 @@
 class BlankBar : BaseStatusBar {
 	HUDFont trainingFont;
+	
 
 	override void Init() {
 		Super.Init();
-// 		SetSize(64,640,480);
+		SetSize(0,320,240);
 		
-		trainingFont = HUDFont.Create(smallfont);
+		trainingFont = HUDFont.Create(confont);
 	}
 
 	override void Draw(int state, double TicFrac) {
 		Super.Draw(state, TicFrac);
+		
+		BaseFighter p1 = ((Ancestor)(players[0].mo)).allFighters[0];
 		
 		int enemyhealth = ((Ancestor)(players[0].mo)).allFighters[1].Health;
 
@@ -21,15 +24,50 @@ class BlankBar : BaseStatusBar {
 		DrawImage("textures/uieclipse.ase", (0, 20), DI_SCREEN_CENTER_TOP|DI_ITEM_TOP, 1.0);
 
 		// Training info
-		Fill(color(128,128,128,255),15,15,65,25);
-		Fill(color(255,0,0,0),20,20,55,15);
 		
-// 		DrawString(trainingFont, "\cjv0.0.0", (25,25));
-
-		DrawString(trainingFont,String.Format("\cjP2 HP: %d",enemyhealth),(25,25+8*0));
-// 		DrawString(trainingFont,String.Format("\cjP2 inputs: %d",players[1].buttons),(25,25+8*1));
+		// Input buffer display. Needs some work before it can be fully exposed to the player
+// 		int boxwidth = 128;
+// 		int boxheight = 300;
+// 		Fill(color(128,128,128,255),15,15,boxwidth,boxheight);
+// 		Fill(color(255,0,0,0),20,20,boxwidth - 10,boxheight-10);
+// 		DrawString(trainingFont,"\cjP1 Inputs:",(25,25+8*0));
+// 		DrawString(trainingFont,"----------",(25,25+8*1));
+// 		for (int i = 0; i < p1.BUF_LEN_ACTIONABLE; i++) {
+// 			DrawString(trainingFont, String.Format("\cj%s", buttonString(p1.inputQueue[i])), (25,41+8*i));
+// 		}
 		
-// 		DrawString(trainingFont,String.Format("\cjP1 health: %d",players[0].mo.Health),(25,25+8*3));
-// 		DrawString(trainingFont,String.Format("\cjP2 health: %d",GetAmount("EnemyHP")),(25,25+8*4));
+		int boxwidth = 300;
+		int boxheight = 200;
+		Fill(color(128,128,128,255),15,15,boxwidth,boxheight);
+		Fill(color(255,0,0,0),20,20,boxwidth - 10,boxheight-10);
+		DrawString(trainingFont,"\cjP1 Combo Info:",(25,25+8*0));
+		DrawString(trainingFont,"---------------",(25,25+8*1));
 	}
+	
+	String buttonString(int buttons) {
+        int leftBtn = BT_MOVELEFT;
+        int rightBtn = BT_MOVERIGHT;
+        if (consoleplayer > 0) {
+            leftBtn = BT_MOVERIGHT;
+            rightBtn = BT_MOVELEFT;
+        }
+
+        String buttonText = "";
+        if (buttons & BT_DOWN) {
+            if (buttons & rightBtn) buttonText = buttonText .. "3";
+            else if (buttons & leftBtn) buttonText = buttonText .. "1";
+            else buttonText = buttonText .. "2";
+        } else if (buttons & BT_UP) {
+            if (buttons & rightBtn) buttonText = buttonText .. "9";
+            else if (buttons & leftBtn) buttonText = buttonText .. "7";
+            else buttonText = buttonText .. "8";
+        } else if (buttons & rightBtn) buttonText = buttonText .. "6";
+        else if (buttons & leftBtn) buttonText = buttonText .. "4";
+        else buttonText = buttonText .. "5";
+        if (buttons & BT_LIGHT) buttonText = buttonText .. "L";
+        if (buttons & BT_MEDIUM) buttonText = buttonText .. "M";
+        if (buttons & BT_HEAVY) buttonText = buttonText .. "H";
+		if (buttons & BT_MOVECANCEL) buttonText = buttonText .. "--------";
+        return buttonText;
+    }
 }

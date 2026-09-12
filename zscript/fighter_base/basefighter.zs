@@ -5,6 +5,8 @@ class BaseFighter : Actor abstract {
 	Scale 0.2;
 	PainChance 255;
 	Health 150;
+	
+	Friction 0.8;
 	  
 	+SHOOTABLE;
 	+CASTSPRITESHADOW;
@@ -35,3 +37,4 @@ class BaseFighter : Actor abstract {
 #include "zscript/fighter_base/basefighter_input.zs"
 #include "zscript/fighter_base/basefighter_physics.zs"
 #include "zscript/fighter_base/basefighter_moves.zs"
+#include "zscript/fighter_base/basefighter_combo.zs"
