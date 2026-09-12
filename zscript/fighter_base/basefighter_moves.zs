@@ -13,6 +13,8 @@ extend class BaseFighter {
 	Actor lastHitTarget;
 	
 	int cancelTics;
+	
+// 	int airJumps;
 
 	void MovesPostBeginPlay() {
 	
@@ -26,13 +28,15 @@ extend class BaseFighter {
 		if (InStateSequence(curstate, ResolveState("JUMP"))) HandleJump();
 		if (InStateSequence(curstate, ResolveState("WALK"))) HandleWalk();
 			
+// 		if (Pos.Z == FloorZ) airJumps = 1;
+			
 		// Cancels
 		if (cancelTics > 0) {
 // 			Console.Printf("Cancel Window");
 			cancelTics -= 1;
 			
 			if (Pos.Z == FloorZ) {
-				if (ButtonDown("8")) {
+				if (ButtonDown("8") || CheckSpecialInput("8")) {
 					if (ButtonPressed(BT_MOVELEFT)) Vel.X = -2;
 					if (ButtonPressed(BT_MOVERIGHT)) Vel.X = 2;
 					Vel.Z = 10;
@@ -40,19 +44,28 @@ extend class BaseFighter {
 					SetStateLabel("JUMP");
 					AirMoves();
 				} else GroundMoves();
-				
 			} else {
-				AirMoves();
+// 				if (airJumps > 0 && (ButtonDown("8") || CheckSpecialInput("8"))) {
+// 					airJumps = 0;
+// 					if (ButtonPressed(BT_MOVELEFT)) Vel.X = -2;
+// 					if (ButtonPressed(BT_MOVERIGHT)) Vel.X = 2;
+// 					Vel.Z = 10;
+// 					SetOrigin((Pos.X,Pos.Y,Pos.Z+1),false);
+// 					SetStateLabel("JUMP");
+// 					AirMoves();
+// 				} else {
+					AirMoves();
+// 				}
 			}
 		}
 	}
 	
-	bool HitLine(double length, double z_offset, int dmg, StateLabel hurtanim, Vector2 knockback, Vector2 selfKnockback = (0,0)) {
+	bool HitLine(double length, double z_offset, int dmg, Name pufftype, Vector2 knockback, Vector2 selfKnockback = (0,0)) {
 		FTranslatedLineTarget t;
-		LineAttack(Angle, length, 0, dmg, 'Normal', 'SmashPuff', 0, t, z_offset);
+		LineAttack(Angle, length, 0, dmg, 'Normal', pufftype, 0, t, z_offset);
 
 		if (t.linetarget != null) {
-			t.linetarget.SetStateLabel(hurtanim);
+			t.linetarget.SetStateLabel('PAIN');
 			
 			A_Quake(dmg/3, dmg/2, 0,20000);
 			
@@ -66,23 +79,6 @@ extend class BaseFighter {
 			// Allow a little extra time for delay cancelling
 			cancelTics = dmg+8;
 		}
-			
-// 			if (Pos.Z == FloorZ) {
-				
-// 				if (ButtonDown("8")) {
-// 					if (ButtonPressed(BT_MOVELEFT)) Vel.X = -2;
-// 					if (ButtonPressed(BT_MOVERIGHT)) Vel.X = 2;
-// 					Vel.Z = 10;
-// 					SetOrigin((Pos.X,Pos.Y,Pos.Z+1),false);
-// 					SetStateLabel("JUMP");
-// 					AirMoves();
-// 				} else GroundMoves();
-				
-// 			} else {
-// 				AirMoves();
-// 			}
-			
-// 		}
 		
 		return t.linetarget != null;
 	}
