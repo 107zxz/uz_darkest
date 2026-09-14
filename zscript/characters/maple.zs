@@ -8,8 +8,12 @@ class Maple : BaseFighter {
     FETC ABCCDDEEFGHIJ 2;
     Goto IDLE;
   PAIN:
-	MAHT A 16;
+// 	MAHT A 16;
+	MABK AB 8;
+	Goto IDLE;
+
+  BLOCK:
+	MABK AB 7;
 	Goto IDLE;
   }
-
 }

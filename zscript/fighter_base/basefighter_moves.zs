@@ -60,23 +60,40 @@ extend class BaseFighter {
 		}
 	}
 	
+	void IAmHit(Actor inflictor, int dmg, Vector2 knockback, bool blocked) {
+		if (blocked) {
+			freezetics = dmg/2;
+			Vel = (knockback.X * -(1-Angle / 90),0,0);
+			inflictor.Vel += (knockback.X * (1-Angle / 90),0,0);
+			SetStateLabel('BLOCK');
+			
+			A_Quake(dmg/4, dmg/3, 0,20000);
+			return;
+		}
+	
+		freezetics = dmg;
+		Vel = (knockback.X * -(1-Angle / 90),0,knockback.Y);
+		SetStateLabel('PAIN');
+		DamageMobj(inflictor, inflictor, dmg, 'Normal');
+		
+		A_Quake(dmg/3, dmg/2, 0,20000);
+	}
+	
 	bool HitLine(double length, double z_offset, int dmg, Name pufftype, Vector2 knockback, Vector2 selfKnockback = (0,0)) {
 		FTranslatedLineTarget t;
-		LineAttack(Angle, length, 0, dmg, 'Normal', pufftype, 0, t, z_offset);
+		
+		bool blocked = CVar.FindCVar("sv_trainingblock").GetBool();
+		if (blocked) pufftype = 'BlockPuff';
+		
+		LineAttack(Angle, length, 0, 0, 'Normal', pufftype, 0, t, z_offset);
 
 		if (t.linetarget != null) {
-			t.linetarget.SetStateLabel('PAIN');
+			((BaseFighter)(t.linetarget)).IAmHit(self, dmg, knockback, blocked);
 			
-			A_Quake(dmg/3, dmg/2, 0,20000);
 			
 			freezetics = dmg;
-			t.linetarget.freezetics = dmg;
-			
-			t.linetarget.Vel = (knockback.X * (1-Angle / 90),0,knockback.Y);
 			Vel += (selfKnockback.X * (1-Angle / 90),0,selfKnockback.Y);
 			
-// 			Console.Printf("Hit! %d", dmg);
-			// Allow a little extra time for delay cancelling
 			cancelTics = dmg+8;
 		}
 		

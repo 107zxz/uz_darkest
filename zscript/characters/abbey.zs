@@ -21,19 +21,19 @@ class Abbey : BaseFighter {
 	J5P:
 	---- A 1;
 	EBJP A 2;
-	EBJP A 8 HitLine(32,-32,HITSTUN_MEDIUM,'SmashPuff',(1,2));
+	EBJP A 8 HitLine(32,-32,HITSTUN_MEDIUM,'SmashPuff',(0.5,2));
 	Goto JUMP;
 	
 	J5S:
 	---- A 1;
 	EBJP A 3;
-	EBJS AAAA 2 HitLine(32,-24,HITSTUN_MEDIUM,'SmashPuff',(1.5,2.5));
+	EBJS AAAA 2 HitLine(32,-24,HITSTUN_MEDIUM,'SlashPuff',(0.75,2.5));
 	Goto JUMP;
 	
 	J5H:
 	---- A 1;
 	EBJP A 4;
-	EBJH A 8 HitLine(64,0,HITSTUN_HEAVY,'SlashPuff',(2,2.5), (3,2.5));
+	EBJH A 8 HitLine(64,0,HITSTUN_HEAVY,'SlashPuff',(1,2.5), (3,2.5));
 	Goto JUMP;
 	
 	N5P:
@@ -54,9 +54,9 @@ class Abbey : BaseFighter {
 	
 	N5H:
 	---- A 1;
-	EB5H BCD 3;
-	EB5H E 3 HitLine(96,0,HITSTUN_HEAVY,'SlashPuff',(0.4,6));
-	EB5H FG 3;
+	EB5H BCDE 2;
+	EB5H F 7 HitLine(96,0,HITSTUN_HEAVY,'SlashPuff',(0.4,6));
+	EB5H GH 2;
 	Goto IDLE;
 	
 	N2P:
@@ -70,7 +70,7 @@ class Abbey : BaseFighter {
 	N2S:
 	---- A 1;
 	EBCM A 3;
-	EBCM B 3 HitLine(64,-16,HITSTUN_MEDIUM,'SmashPuff',(0.4,6));
+	EBCM B 3 HitLine(64,-16,HITSTUN_MEDIUM,'SlashPuff',(0.4,6));
 	EBCM C 3;
 	EBCH A 3;
 	Goto IDLE;
@@ -78,7 +78,7 @@ class Abbey : BaseFighter {
 	N2H:
 	---- A 1;
 	EB2H BCD 3;
-	EB2H E 3 HitLine(64,32,HITSTUN_MEDIUM,'SmashPuff',(0.4,6));
+	EB2H E 3 HitLine(64,32,HITSTUN_MEDIUM,'SlashPuff',(0.4,6));
 	EB2H FG 3;
 	Goto IDLE;
 	}
