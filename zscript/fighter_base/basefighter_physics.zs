@@ -25,7 +25,7 @@ extend class BaseFighter {
 		newX = min(otherP.Pos.X + 160,newX);
 		
 		// Don't allow players to get too close together!
-		if (Abs(Pos.Z - otherP.Pos.Z)< 32 && delta<Radius/2+otherP.Radius/2) {
+		if (Abs(Pos.Z - otherP.Pos.Z)< 40 && delta<Radius/2+otherP.Radius/2) {
 			float seperation_force=Radius/2+otherP.Radius/2-delta;
 			
 			newX-=seperation_force/3 * (1-Angle/90);

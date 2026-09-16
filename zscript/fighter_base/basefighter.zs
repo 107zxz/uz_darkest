@@ -12,6 +12,7 @@ class BaseFighter : Actor abstract {
 	+CASTSPRITESHADOW;
 	+NOBLOOD;
 	+BRIGHT;
+
 	
 	+BUDDHA;
 	}

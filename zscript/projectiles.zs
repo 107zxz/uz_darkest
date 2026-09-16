@@ -17,3 +17,20 @@ class GenericHitbox : Actor {
 		Loop;
 	}
 }
+
+class SuperCross : Actor {
+	Default {
+		Projectile;
+		Damage 1;
+		Scale 0.2;
+		Height 86;
+		+BRIGHT;
+		+RIPPER;
+	}
+	
+	States {
+	SPAWN:
+		EB22 DEDEDEDE 4;
+		Stop;
+	}
+}
