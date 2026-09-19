@@ -17,8 +17,8 @@ OptionMenu "MainMenu"
 	
 	StaticText "Training Options"
 	Command "Reset Positions", "map map01", 1, 1	StaticText ""
-	Option "P1 Character", "sv_p1fighter", "FighterOptions", "", 1
-	Option "P2 Character", "sv_p2fighter", "FighterOptions", "", 1
+// 	Option "P1 Character", "sv_p1fighter", "FighterOptions", "", 1
+// 	Option "P2 Character", "sv_p2fighter", "FighterOptions", "", 1
 	Option "P2 Guard", "sv_trainingblock", "DummyBlocking", "", 1
 	
 	StaticText ""
@@ -33,4 +33,9 @@ OptionMenu "MainMenu"
 	Control "Medium Attack", "+altattack"
 	Control "Heavy Attack", "+use"
 	Control "Special Function", "+reload"
+	
+	StaticText ""
+	StaticText ""
+	
+	StaticText "Thank you to all out contributors!"
 }

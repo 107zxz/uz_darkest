@@ -19,15 +19,16 @@ class Abbey : BaseFighter {
 	Loop;
 	
 	LAND:
-	EBCH A 2 {
-		bSHOOTABLE = false;
-		A_SetRenderStyle(1.0, STYLE_Stencil);
-		cancelTics =0;
-	}
-	TNT1 A 1 {
-		A_SetRenderStyle(1.0, STYLE_Normal);
-		bSHOOTABLE = true;
-	}
+	EBCH A 4;
+	Goto IDLE;
+	
+  PAIN:
+// 	MAHT A 16;
+	MABK AB 8;
+	Goto IDLE;
+
+  BLOCK:
+	MABK AB 7;
 	Goto IDLE;
 	
 	J5P:
@@ -40,24 +41,24 @@ class Abbey : BaseFighter {
 	---- A 1;
 	EBJP A 3;
 	EBJS A 2 {
-		HitLine(32,-8,HITSTUN_MEDIUM,'SlashPuff',(0.75,2.5),'J5S') ||
-		HitLine(32,0,HITSTUN_MEDIUM,'SlashPuff',(0.75,2.5),'J5S') ||
-		HitLine(32,-16,HITSTUN_MEDIUM,'SlashPuff',(0.75,2.5),'J5S');
+		HitLine(32,-8,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S') ||
+		HitLine(32,0,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S') ||
+		HitLine(32,-16,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S');
 	}
 	EBJS A 2 {
-		HitLine(32,-8,HITSTUN_LIGHT,'SlashPuff',(0.75,2.5),'J5S2') ||
-		HitLine(32,0,HITSTUN_LIGHT,'SlashPuff',(0.75,2.5),'J5S2') ||
-		HitLine(32,-16,HITSTUN_LIGHT,'SlashPuff',(0.75,2.5),'J5S2');
+		HitLine(32,-8,HITSTUN_LIGHT,'SlashPuff',(0.75,0),'J5S2') ||
+		HitLine(32,0,HITSTUN_LIGHT,'SlashPuff',(0.75,0),'J5S2') ||
+		HitLine(32,-16,HITSTUN_LIGHT,'SlashPuff',(0.75,0),'J5S2');
 	}
 	EBJS A 2 {
-		HitLine(32,-8,HITSTUN_MEDIUM,'SlashPuff',(0.75,2.5),'J5S3') ||
-		HitLine(32,0,HITSTUN_MEDIUM,'SlashPuff',(0.75,2.5),'J5S3') ||
-		HitLine(32,-16,HITSTUN_MEDIUM,'SlashPuff',(0.75,2.5),'J5S3');
+		HitLine(32,-8,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S3') ||
+		HitLine(32,0,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S3') ||
+		HitLine(32,-16,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S3');
 	}
 	EBJS A 2 {
-		HitLine(32,-8,HITSTUN_MEDIUM,'SlashPuff',(0.75,2.5),'J5S4') ||
-		HitLine(32,0,HITSTUN_MEDIUM,'SlashPuff',(0.75,2.5),'J5S4') ||
-		HitLine(32,-16,HITSTUN_MEDIUM,'SlashPuff',(0.75,2.5),'J5S4');
+		HitLine(32,-8,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S4') ||
+		HitLine(32,0,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S4') ||
+		HitLine(32,-16,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S4');
 	}
 	Goto JUMP;
 	
@@ -65,9 +66,9 @@ class Abbey : BaseFighter {
 	---- A 1;
 	EBJP A 4;
 	EBJH A 8 {
-		HitLine(64,0,HITSTUN_HEAVY,'SlashPuff',(1,2.5),'J5H', (0,2.5)) ||
-		HitLine(64,-16,HITSTUN_HEAVY,'SlashPuff',(1,2.5),'J5H', (0,2.5)) ||
-		HitLine(64,16,HITSTUN_HEAVY,'SlashPuff',(1,2.5),'J5H', (0,2.5));
+		HitLine(64,0,HITSTUN_HEAVY,'SlashPuff',(1,0),'J5H', (0,2.5)) ||
+		HitLine(64,-16,HITSTUN_HEAVY,'SlashPuff',(1,0),'J5H', (0,2.5)) ||
+		HitLine(64,16,HITSTUN_HEAVY,'SlashPuff',(1,0),'J5H', (0,2.5));
 	}
 	Goto JUMP;
 	
@@ -81,17 +82,21 @@ class Abbey : BaseFighter {
 	
 	N5P:
 	---- A 1;
-	EB5P B 1;
-	EB5P B 2 HitLine(32,0,HITSTUN_LIGHT,'SmashPuff',(0.4,0),'N5P');
-	EB5P C 2;
-	EB5P D 8;
+	EB5K BC 1;
+	EB5K D 2 HitLine(32,0,HITSTUN_LIGHT,'SmashPuff',(0.4,0),'N5P');
+	EB5K E 2;
+	EB5K FG 1;
 	Goto IDLE;
 	
 	N5S:
 	---- A 1;
 	EB5S B 3;
 	EB5S C 2;
-	EB5S D 3 HitLine(96,0,HITSTUN_MEDIUM,'SlashPuff',(2,0),'N5S');
+	EB5S D 3 {
+		HitLine(96,0,HITSTUN_MEDIUM,'SlashPuff',(2,0),'N5S') ||
+		HitLine(96,32,HITSTUN_MEDIUM,'SlashPuff',(2,0),'N5S') ||
+		HitLine(96,64,HITSTUN_MEDIUM,'SlashPuff',(2,0),'N5S');
+	}
 	EB5S E 2;
 	Goto IDLE;
 	

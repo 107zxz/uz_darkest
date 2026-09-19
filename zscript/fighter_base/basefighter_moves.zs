@@ -213,10 +213,10 @@ extend class BaseFighter {
 	
 	virtual void GroundMoves() {
 	
-		if (CheckSpecialInput("252L")) {
-			CancelIfDifferent("S22X");
-			return;
-		}
+// 		if (CheckSpecialInput("252L")) {
+// 			CancelIfDifferent("S22X");
+// 			return;
+// 		}
 		if (CheckSpecialInput("2L")) {CancelIfDifferent("N2P"); return;}
 		if (CheckSpecialInput("2M")) {CancelIfDifferent("N2S"); return;}
 		if (CheckSpecialInput("2H")) {CancelIfDifferent("N2H"); return;}

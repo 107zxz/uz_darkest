@@ -6,7 +6,7 @@ class BlankBar : BaseStatusBar {
 
 	override void Init() {
 		Super.Init();
-		SetSize(0,320,240);
+// 		SetSize(0,640,480);
 		
 		trainingFont = HUDFont.Create(confont);
 	}
@@ -15,6 +15,7 @@ class BlankBar : BaseStatusBar {
 		Super.Draw(state, TicFrac);
 		
 		BaseFighter p1 = ((Ancestor)(players[0].mo)).allFighters[0];
+		BaseFighter p2 = ((Ancestor)(players[0].mo)).allFighters[1];
 		
 		int enemyhealth = ((Ancestor)(players[0].mo)).allFighters[1].Health;
 		
@@ -25,7 +26,7 @@ class BlankBar : BaseStatusBar {
 		if (p1.combo != null)
 			comboChain = p1.combo.chain;
 
-		BeginHUD(1.0, true, 640, 480);
+		BeginHUD(1.0, true, 800, 600);
 		DrawImage("textures/uibarsback.ase", (0, 60), DI_SCREEN_CENTER_TOP|DI_ITEM_LEFT_TOP, 1.0);
 		DrawImage("textures/uibarsback.ase", (0, 60), DI_SCREEN_CENTER_TOP|DI_ITEM_RIGHT_TOP|DI_MIRROR, 1.0);
 		DrawImage("textures/uibarsfront.ase", (enemyhealth*2-300, 62), DI_SCREEN_CENTER_TOP|DI_ITEM_LEFT_TOP, 1.0);
@@ -41,9 +42,7 @@ class BlankBar : BaseStatusBar {
 			DrawImage("textures/CHAIN.ase",(-32-32+32,-72), DI_SCREEN_LEFT_TOP|DI_ITEM_LEFT_TOP,0.6);
 			if (comboChain < 3)
 			DrawImage("textures/CHAIN.ase",(-32,0), DI_SCREEN_LEFT_TOP|DI_ITEM_LEFT_TOP,0.8);
-			
-			
-			
+
 			chainFade = 1.0;
 		} else {
 			chainFade -= 1.0/35.0;
@@ -54,7 +53,7 @@ class BlankBar : BaseStatusBar {
 		DrawString(trainingFont,String.Format("Hits: %d", comboLength), (72,86),9,Font.CR_LIGHTBLUE,chainFade,-1,4,(3,3));
 		
 		// VERSION
-		DrawString(trainingFont, "ALPHA PLAYTEST 3",(410,5));
+		DrawString(trainingFont, "ALPHA PLAYTEST 3.5",(410,5));
 	}
 	
 	String buttonString(int buttons) {

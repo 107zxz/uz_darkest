@@ -2,58 +2,129 @@ class Fetch : BaseFighter {
 	States {
 	SPAWN:
 	IDLE:
-		FETC A 1;
-		Loop;
-	N5H:
-		
-		FETC BC 3;
-		FETC D 3 {
-			FTranslatedLineTarget victim;
-			LineAttack(Angle,96,0,32,'Hitscan',"SmashPuff",0,victim);
-			if (victim.linetarget) {
-				otherP.Vel.Z = 10;
-				otherP.Vel.X = 3;
-				if (bXFLIP) otherP.Vel.X = -3;
-// 				otherP.SetOrigin((Pos.X+96,otherP.Pos.Y,otherP.Pos.Z),true);
-				
-// 				otherP.freezetics = 5;
-// 				freezetics = 5;
-				A_Quake(1.0,5,0,256);
-			}
-		}
-		FETC E 3;
-		FETC F 3;
-		TNT1 A 0 {
-			SetOrigin((Pos.X + 645 * 0.1 * (1-(Angle/90)), Pos.Y, Pos.Z), false);
-		}
-		Goto IDLE;
-	N5M:
-		FETC BC 3;
-		FETC D 3 {
-			FTranslatedLineTarget victim;
-			LineAttack(Angle,96,0,32,'Hitscan',"SmashPuff",0,victim);
-			if (victim.linetarget) {
-				otherP.Vel.Z = 10;
-				otherP.Vel.X = 3;
-				if (bXFLIP) otherP.Vel.X = -3;
-// 				otherP.SetOrigin((Pos.X+96,otherP.Pos.Y,otherP.Pos.Z),true);
-				
-// 				otherP.freezetics = 5;
-// 				freezetics = 5;
-				A_Quake(1.0,5,0,256);
-			}
-		}
-		FETC E 3;
-		FETC F 3;
-		TNT1 A 0 {
-			SetOrigin((Pos.X + 645 * 0.1 * (1-(Angle/90)), Pos.Y, Pos.Z), false);
-		}
-		Goto IDLE;
-	}
+	FETC A 1;
+	Loop;
 	
-// 	override void HandleIdle() {
-// 		Super.HandleIdle();
-// 		if (ButtonPressed(BT_ATTACK)) SetStateLabel("N5H");
-// 		if (ButtonPressed(BT_ALTATTACK)) SetStateLabel("N5M");
-// 	}
+	CROUCH:
+	EBCH A 1;
+	Loop;
+	
+	WALK:
+	FETW ABC 4;
+	Loop;
+	
+	JUMP:
+	---- A 1;
+	EBAR A 1;
+	Loop;
+	
+	LAND:
+	EBCH A 4;
+	Goto IDLE;
+	
+	J5P:
+	---- A 1;
+	EBJP A 2;
+	EBJP A 8 HitLine(32,-16,HITSTUN_MEDIUM,'SmashPuff',(0.5,2),'J5P');
+	Goto JUMP;
+	
+	J5S:
+	---- A 1;
+	EBJP A 3;
+	EBJS A 2 {
+		HitLine(32,-8,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S') ||
+		HitLine(32,0,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S') ||
+		HitLine(32,-16,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S');
+	}
+	EBJS A 2 {
+		HitLine(32,-8,HITSTUN_LIGHT,'SlashPuff',(0.75,0),'J5S2') ||
+		HitLine(32,0,HITSTUN_LIGHT,'SlashPuff',(0.75,0),'J5S2') ||
+		HitLine(32,-16,HITSTUN_LIGHT,'SlashPuff',(0.75,0),'J5S2');
+	}
+	EBJS A 2 {
+		HitLine(32,-8,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S3') ||
+		HitLine(32,0,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S3') ||
+		HitLine(32,-16,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S3');
+	}
+	EBJS A 2 {
+		HitLine(32,-8,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S4') ||
+		HitLine(32,0,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S4') ||
+		HitLine(32,-16,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S4');
+	}
+	Goto JUMP;
+	
+	J5H:
+	---- A 1;
+	EBJP A 4;
+	EBJH A 8 {
+		HitLine(64,0,HITSTUN_HEAVY,'SlashPuff',(1,0),'J5H', (0,2.5)) ||
+		HitLine(64,-16,HITSTUN_HEAVY,'SlashPuff',(1,0),'J5H', (0,2.5)) ||
+		HitLine(64,16,HITSTUN_HEAVY,'SlashPuff',(1,0),'J5H', (0,2.5));
+	}
+	Goto JUMP;
+	
+	S22X:
+	---- A 1;
+	EB22 AABC 4;
+	EB22 C 4 {
+		A_SpawnItem('SuperCross');
+	}
+	Goto IDLE;
+	
+	N5P:
+	---- A 1;
+	FETW BC 1;
+	FETW D 2 HitLine(32,0,HITSTUN_LIGHT,'SmashPuff',(0.4,0),'N5P');
+	FETW E 2;
+	FETW FG 1;
+	Goto IDLE;
+	
+	N5S:
+	---- A 1;
+	EB5S B 3;
+	EB5S C 2;
+	EB5S D 3 {
+		HitLine(96,0,HITSTUN_MEDIUM,'SlashPuff',(2,0),'N5S') ||
+		HitLine(96,32,HITSTUN_MEDIUM,'SlashPuff',(2,0),'N5S') ||
+		HitLine(96,64,HITSTUN_MEDIUM,'SlashPuff',(2,0),'N5S');
+	}
+	EB5S E 2;
+	Goto IDLE;
+	
+	N5H:
+	---- A 1;
+	EB5H BCDE 2;
+	EB5H F 7 {
+		HitLine(96,0,HITSTUN_HEAVY,'SlashPuff',(0.4,6),'N5H') ||
+		HitLine(96,-16,HITSTUN_HEAVY,'SlashPuff',(0.4,6),'N5H');
+	}
+	EB5H GH 2;
+	Goto IDLE;
+	
+	N2P:
+	---- A 1;
+	EBCP A 1;
+	EBCP A 2 HitLine(32,-16,HITSTUN_LIGHT,'SmashPuff',(0.4,0),'N2P');
+	EBCP B 3;
+	EBCH A 3;
+	Goto IDLE;
+	
+	N2S:
+	---- A 1;
+	EBCM A 3;
+	EBCM B 3 HitLine(64,-16,HITSTUN_MEDIUM,'SlashPuff',(0.4,6),'N2S');
+	EBCM C 3;
+	EBCH A 3;
+	Goto IDLE;
+
+	N2H:
+	---- A 1;
+	EB2H BCD 3;
+	EB2H E 3 {
+		HitLine(64,32,HITSTUN_MEDIUM,'SlashPuff',(0.4,6),'N2H') ||
+		HitLine(64,0,HITSTUN_MEDIUM,'SlashPuff',(0.4,6),'N2H');
+	}
+	EB2H FG 3;
+	Goto IDLE;
+	}
 }
