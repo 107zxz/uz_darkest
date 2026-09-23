@@ -2,11 +2,18 @@ class Abbey : BaseFighter {
 	States {
 	SPAWN:
 	IDLE:
-	EBBY A 1;
+	EBBY A 1 {
+		A_SetSize(12);
+		otherP.combo = null;
+	}
+	EBBY A 0 {
+// 		if (pIdx == 1)
+// 			SetStateLabel('N5S');
+	}
 	Loop;
 	
 	CROUCH:
-	EBCH A 1;
+	EBCH A 1 A_SetSize(12);
 	Loop;
 	
 	WALK:
@@ -19,16 +26,22 @@ class Abbey : BaseFighter {
 	Loop;
 	
 	LAND:
-	EBCH A 4;
+	EBCH A 2;
 	Goto IDLE;
 	
-  PAIN:
+	PAIN:
 // 	MAHT A 16;
+	TNT1 A 0 A_Pain;
+	TNT1 A 0 A_SetSize(12);
 	MABK AB 8;
 	Goto IDLE;
 
-  BLOCK:
-	MABK AB 7;
+	BLOCK:
+	MABK AB 5 A_SetSize(12);
+	Goto IDLE;
+	
+	CROUCHBLOCK:
+	EBCH A 10 A_SetSize(12);
 	Goto IDLE;
 	
 	J5P:
@@ -93,11 +106,13 @@ class Abbey : BaseFighter {
 	EB5S B 3;
 	EB5S C 2;
 	EB5S D 3 {
-		HitLine(96,0,HITSTUN_MEDIUM,'SlashPuff',(2,0),'N5S') ||
-		HitLine(96,32,HITSTUN_MEDIUM,'SlashPuff',(2,0),'N5S') ||
-		HitLine(96,64,HITSTUN_MEDIUM,'SlashPuff',(2,0),'N5S');
+		A_SetSize(64);
+		HitLine(96,0,HITSTUN_MEDIUM,'SlashPuff',(2,0),'N5S');
+// 		HitLine(96,32,HITSTUN_MEDIUM,'SlashPuff',(2,0),'N5S');
+// 		HitLine(96,64,HITSTUN_MEDIUM,'SlashPuff',(2,0),'N5S');
 	}
-	EB5S E 2;
+	EB5S E 4;
+	TNT1 A 0 A_SetSize(12);
 	Goto IDLE;
 	
 	N5H:

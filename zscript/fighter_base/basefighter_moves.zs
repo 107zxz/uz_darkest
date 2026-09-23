@@ -24,6 +24,11 @@ extend class BaseFighter {
 	
 	
 	void MovesTick() {
+	
+		// DEBUG: Heal outside of combos
+		if (!otherP.combo)
+			GiveBody(3);
+	
 		// This one's important, if we land in an air move early cancel it.
 		// Also if you're getting hit and land end the combo
 		if (Pos.Z == FloorZ && inAir) {
@@ -63,7 +68,11 @@ extend class BaseFighter {
 			freezetics = dmg/2;
 			Vel = (knockback.X * -(1-Angle / 90),0,0);
 			inflictor.Vel += (knockback.X * (1-Angle / 90),0,0);
-			SetStateLabel('BLOCK');
+			
+			if (ButtonDown("2") && !inAir)
+				SetStateLabel('CROUCHBLOCK');
+			else
+				SetStateLabel('BLOCK');
 			
 			A_Quake(dmg/4, dmg/3, 0,20000);
 			return;
@@ -99,7 +108,21 @@ extend class BaseFighter {
 		if (combo && !combo.CanDoMove(moveName))
 			return false;
 		
-		bool blocked = CVar.FindCVar("sv_trainingblock").GetBool();
+		bool blocked;
+		blocked = otherP.ButtonPressed(otherP.bt_left);
+		blocked |= CVar.FindCVar("sv_trainingblock").GetBool();
+// 		blocked &= !otherP.curState.InStateSequence(otherP.ResolveState('PAIN'));
+		
+		if (!otherP.curState.InStateSequence(otherP.ResolveState('IDLE')) &&
+			!otherP.curState.InStateSequence(otherP.ResolveState('BLOCK')) &&
+			!otherP.curState.InStateSequence(otherP.ResolveState('CROUCHBLOCK')) &&
+			!otherP.curState.InStateSequence(otherP.ResolveState('WALK')) &&
+			!otherP.curState.InStateSequence(otherP.ResolveState('CROUCH')) &&
+			!otherP.curState.InStateSequence(otherP.ResolveState('JUMP'))
+			) {
+			blocked = false;
+		}
+		
 		if (blocked) pufftype = 'BlockPuff';
 		
 		LineAttack(Angle, length, 0, 0, 'Normal', pufftype, 0, t, z_offset);
@@ -126,7 +149,7 @@ extend class BaseFighter {
 	virtual void HandleIdle() {
 	
 		// TRAINING MODE EXCLUSIVE. Regen hp
-		GiveBody(3);
+		
 		
 		// End combo
 		if (otherP.combo)

@@ -14,9 +14,9 @@ extend class BaseFighter {
     int bt_left;
     int bt_right;
     
-//     const BUF_LEN = 70;
+    const BUF_LEN = 70;
     const BUF_LEN_ACTIONABLE = 32;
-    int inputQueue[BUF_LEN_ACTIONABLE];
+    int inputQueue[BUF_LEN];
 
 	void InputPostBeginPlay() {
 	
@@ -39,7 +39,7 @@ extend class BaseFighter {
 	
 	void HandleInput() {
         // Add to input queue
-        for (int i = BUF_LEN_ACTIONABLE-1; i > 0; i--) {
+        for (int i = BUF_LEN-1; i > 0; i--) {
             inputQueue[i] = inputQueue[i-1];
         }
         inputQueue[0] = players[pIdx].buttons;

@@ -17,20 +17,20 @@ extend class BaseFighter {
 		float newX = Pos.X;
 		
 		// Keep in bounds
-		newX = min(160-Radius/2,newX);
-		newX = max(-160+Radius/2,newX);
+		newX = min(160-12/2,newX);
+		newX = max(-160+12/2,newX);
 		
 		// Don't allow players to get too far apart!
 		newX = max(otherP.Pos.X - 160,newX);
 		newX = min(otherP.Pos.X + 160,newX);
 		
 		// Don't allow players to get too close together!
-		if (Abs(Pos.Z - otherP.Pos.Z)< 40 && delta<Radius/2+otherP.Radius/2) {
-			float seperation_force=Radius/2+otherP.Radius/2-delta;
+		if (Abs(Pos.Z - otherP.Pos.Z)< 40 && delta<12/2+12/2) {
+			float seperation_force=12/2+12/2-delta;
 			
 			newX-=seperation_force/3 * (1-Angle/90);
 		}
 		
-		SetOrigin((newX,Pos.Y,Pos.Z),true);
+		SetOrigin((newX,0,Pos.Z),true);
 	}
 }

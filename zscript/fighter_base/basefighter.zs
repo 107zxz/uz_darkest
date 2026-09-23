@@ -4,6 +4,7 @@ class BaseFighter : Actor abstract {
 	Height 53;
 	Scale 0.2;
 	PainChance 255;
+	PainSound "hit01";
 	Health 150;
 	
 	Friction 0.8;
@@ -12,6 +13,8 @@ class BaseFighter : Actor abstract {
 	+CASTSPRITESHADOW;
 	+NOBLOOD;
 	+BRIGHT;
+	
+// 	+CLIENTSIDE;
 
 	
 	+BUDDHA;
