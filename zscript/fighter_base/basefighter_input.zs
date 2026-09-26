@@ -15,7 +15,7 @@ extend class BaseFighter {
     int bt_right;
     
     const BUF_LEN = 70;
-    const BUF_LEN_ACTIONABLE = 32;
+    const BUF_LEN_ACTIONABLE = 24;
     int inputQueue[BUF_LEN];
 
 	void InputPostBeginPlay() {

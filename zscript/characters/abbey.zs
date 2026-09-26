@@ -17,8 +17,22 @@ class Abbey : BaseFighter {
 	Loop;
 	
 	WALK:
-	EBBY A 1;
+	EBWK BA 5;
 	Loop;
+	
+	RUN:
+	EBWK CA 4;
+	Loop;
+	
+	RUNSTOP:
+	EB5H H 8;
+	Goto IDLE;
+	
+	BACKDASH:
+	EB5H H 6;
+// 	EB5H HHHH 1 SetOrigin((Pos.X - 6 * (1-Angle / 90), Pos.Y, Pos.Z), true);
+// 	EB5H HH 1 SetOrigin((Pos.X - 3 * (1-Angle / 90), Pos.Y, Pos.Z), true);
+	Goto IDLE;
 	
 	JUMP:
 	---- A 1;
@@ -37,11 +51,49 @@ class Abbey : BaseFighter {
 	Goto IDLE;
 
 	BLOCK:
-	MABK AB 5 A_SetSize(12);
+	EBBK AA 5 A_SetSize(12);
 	Goto IDLE;
 	
 	CROUCHBLOCK:
-	EBCH A 10 A_SetSize(12);
+	EBCB A 10 A_SetSize(12);
+	Goto IDLE;
+	
+	GRAB:
+	EBGB A 3 {Vel.X += (1-Angle / 90)*2;}
+	TNT1 A 0 {
+		if (HitLine(32,0,0,'SmashPuff',(0,0),'GRAB',MOVE_UNBLOCKABLE | MOVE_NOCANCEL | MOVE_NOHITAIR)) {
+			SetStateLabel("THROW");
+		}
+	}
+	EBGB B 14;
+	Goto IDLE;
+	
+	THROW:
+	EBGB A 5 {
+		otherP.SetStateLabel("PAIN");
+		
+	}
+	EBAR A 1 {
+		SetOrigin((Pos.X,0,Pos.Z+1),true);
+		Vel.Z = 8;
+		Vel.X = 3 * (1-Angle/90);
+	}
+	EBAR AAAAAAAAAAAAAAAAAAAA 1 {
+		otherP.SetStateLabel("PAIN");
+		otherP.SetOrigin((Pos.X-20* (1-Angle/90),0,Pos.Z+30),true);
+		inAir = false;
+	}
+	EB22 A 1 {
+		SetOrigin((Pos.X,0,0),true);
+		otherP.SetOrigin((Pos.X+20 * (1-Angle/90),0,0),true);
+		HitLine(96,0,HITSTUN_HEAVY,'SlashPuff',(0.8,6),'THROW', MOVE_NOCANCEL);
+	}
+	EB22 B 2 {
+// 		SetOrigin((Pos.X,0,0),true);
+// 		otherP.SetOrigin((Pos.X+20 * (1-Angle/90),0,0),true);
+		HitLine(96,0,HITSTUN_HEAVY,'SlashPuff',(2,6),'THROW2', MOVE_NOCANCEL);
+	}
+	EB22 A 8;
 	Goto IDLE;
 	
 	J5P:
@@ -79,9 +131,9 @@ class Abbey : BaseFighter {
 	---- A 1;
 	EBJP A 4;
 	EBJH A 8 {
-		HitLine(64,0,HITSTUN_HEAVY,'SlashPuff',(1,0),'J5H', (0,2.5)) ||
-		HitLine(64,-16,HITSTUN_HEAVY,'SlashPuff',(1,0),'J5H', (0,2.5)) ||
-		HitLine(64,16,HITSTUN_HEAVY,'SlashPuff',(1,0),'J5H', (0,2.5));
+		HitLine(64,0,HITSTUN_HEAVY,'SlashPuff',(1,0),'J5H', 0, (0,2.5)) ||
+		HitLine(64,-16,HITSTUN_HEAVY,'SlashPuff',(1,0),'J5H', 0, (0,2.5)) ||
+		HitLine(64,16,HITSTUN_HEAVY,'SlashPuff',(1,0),'J5H', 0, (0,2.5));
 	}
 	Goto JUMP;
 	
@@ -96,7 +148,7 @@ class Abbey : BaseFighter {
 	N5P:
 	---- A 1;
 	EB5K BC 1;
-	EB5K D 2 HitLine(32,0,HITSTUN_LIGHT,'SmashPuff',(0.4,0),'N5P');
+	EB5K D 2 HitLine(32,0,HITSTUN_LIGHT,'SmashPuff',(0,0),'N5P');
 	EB5K E 2;
 	EB5K FG 1;
 	Goto IDLE;
@@ -136,7 +188,7 @@ class Abbey : BaseFighter {
 	N2S:
 	---- A 1;
 	EBCM A 3;
-	EBCM B 3 HitLine(64,-16,HITSTUN_MEDIUM,'SlashPuff',(0.4,6),'N2S');
+	EBCM B 3 HitLine(64,-16,HITSTUN_MEDIUM,'SlashPuff',(0.4,6),'N2S',MOVE_BLOCKLOW);
 	EBCM C 3;
 	EBCH A 3;
 	Goto IDLE;

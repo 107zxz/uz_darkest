@@ -1,4 +1,4 @@
 bind j "+ATTACK"
 bind k "+ALTATTACK"
 bind l "+USE"
-bind o "+RELOAD"
+bind semicolon "+RELOAD"

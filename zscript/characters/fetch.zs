@@ -57,9 +57,9 @@ class Fetch : BaseFighter {
 	---- A 1;
 	EBJP A 4;
 	EBJH A 8 {
-		HitLine(64,0,HITSTUN_HEAVY,'SlashPuff',(1,0),'J5H', (0,2.5)) ||
-		HitLine(64,-16,HITSTUN_HEAVY,'SlashPuff',(1,0),'J5H', (0,2.5)) ||
-		HitLine(64,16,HITSTUN_HEAVY,'SlashPuff',(1,0),'J5H', (0,2.5));
+		HitLine(64,0,HITSTUN_HEAVY,'SlashPuff',(1,0),'J5H', 0, (0,2.5)) ||
+		HitLine(64,-16,HITSTUN_HEAVY,'SlashPuff',(1,0),'J5H', 0, (0,2.5)) ||
+		HitLine(64,16,HITSTUN_HEAVY,'SlashPuff',(1,0),'J5H', 0, (0,2.5));
 	}
 	Goto JUMP;
 	

@@ -26,7 +26,9 @@ class BaseFighter : Actor abstract {
 		PhysicsPostBeginPlay();
 	}
 	
-	override void Tick() {
+	override void Tick() {}
+	
+	void bTick() {
 		Super.Tick();
 		
 		InputTick();

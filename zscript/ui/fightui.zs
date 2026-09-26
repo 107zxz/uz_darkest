@@ -92,6 +92,8 @@ class BlankBar : BaseStatusBar {
 
 		Fill(color(255,255,255,0),-p1Health*2.44,62,p1Health*2.44,23,DI_SCREEN_CENTER_TOP|DI_ITEM_LEFT_TOP);
 		Fill(color(255,255,255,0),0,62,enemyhealth*2.44,23,DI_SCREEN_CENTER_TOP|DI_ITEM_LEFT_TOP);
+		Fill(color(255,255,128,0),-p1Health*2.44,72,p1Health*2.44,13,DI_SCREEN_CENTER_TOP|DI_ITEM_LEFT_TOP);
+		Fill(color(255,255,128,0),0,72,enemyhealth*2.44,13,DI_SCREEN_CENTER_TOP|DI_ITEM_LEFT_TOP);
 
 		DrawImage("textures/uieclipse.ase", (0, 20), DI_SCREEN_CENTER_TOP|DI_ITEM_TOP, 1.0);
 
@@ -101,7 +103,7 @@ class BlankBar : BaseStatusBar {
 		
 		
 		// VERSION
-		DrawString(trainingFont, "ALPHA PLAYTEST 4.0",(410,5));
+		DrawString(trainingFont, "ALPHA PLAYTEST 5",(410,5));
 	}
 	
 	String buttonString(int buttons) {

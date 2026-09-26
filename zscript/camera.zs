@@ -29,6 +29,13 @@ class Ancestor : PlayerPawn {
     override void PlayerThink() {
         if (allFighters[0] && allFighters[1]) {
 		
+			// Note for future: Implement rollback-safe movement and stuff
+			// For when CF_PREDICTING is TRUE
+			if (!(player.cheats & CF_PREDICTING)) {	
+				allFighters[0].bTick();
+				allFighters[1].bTick();
+			}
+		
             float avgX = (allFighters[0].Pos.X + allFighters[1].Pos.X) / 2;
             float avgZ = (allFighters[0].Pos.Z + allFighters[1].Pos.Z) / 2;
 			

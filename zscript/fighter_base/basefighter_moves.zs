@@ -2,10 +2,15 @@ const HITSTUN_LIGHT = 3;
 const HITSTUN_MEDIUM = 5;
 const HITSTUN_HEAVY = 7;
 
-enum CancelType {
-	CANCEL_MAGIC,
-	CANCEL_SPECIAL,
-	CANCEL_JUMP
+
+enum MoveFlags {
+	MOVE_BLOCKLOW = 1,
+	MOVE_BLOCKHIGH = 2,
+	MOVE_UNBLOCKABLE = 4,
+	MOVE_NOHITAIR = 8,
+	MOVE_NOHITGROUND = 16,
+	MOVE_NOCANCEL = 32,
+	MOVE_GRAB = 64
 }
 
 extend class BaseFighter {
@@ -43,6 +48,9 @@ extend class BaseFighter {
 		if (InStateSequence(curstate, ResolveState("CROUCH"))) HandleCrouch();
 		if (InStateSequence(curstate, ResolveState("JUMP"))) HandleJump();
 		if (InStateSequence(curstate, ResolveState("WALK"))) HandleWalk();
+		if (InStateSequence(curstate, ResolveState("RUN"))) HandleRun();
+// 		if (InStateSequence(curstate, ResolveState("RUNSTOP"))) HandleRunStop();
+		if (InStateSequence(curstate, ResolveState("BACKDASH"))) HandleBackdash();
 			
 		// Cancels
 		if (cancelTics > 0) {
@@ -63,13 +71,15 @@ extend class BaseFighter {
 		}
 	}
 	
-	void IAmHit(BaseFighter inflictor, int dmg, Vector2 knockback, bool blocked, Name moveName) {
+	void IAmHit(BaseFighter inflictor, int dmg, Vector2 knockback, bool blocked, Name moveName, int flags) {
 		if (blocked) {
+// 			Console.Printf("Flags: %d", flags);
+		
 			freezetics = dmg/2;
 			Vel = (knockback.X * -(1-Angle / 90),0,0);
 			inflictor.Vel += (knockback.X * (1-Angle / 90),0,0);
 			
-			if (ButtonDown("2") && !inAir)
+			if ((ButtonDown("2") && !inAir) || (CVar.FindCVar("sv_trainingblock").GetBool() && flags & MOVE_BLOCKLOW))
 				SetStateLabel('CROUCHBLOCK');
 			else
 				SetStateLabel('BLOCK');
@@ -101,8 +111,10 @@ extend class BaseFighter {
 		A_Quake(dmg/3, dmg/2, 0,20000);
 	}
 	
-	bool HitLine(double length, double z_offset, int dmg, Name pufftype, Vector2 knockback, Name moveName, Vector2 selfKnockback = (0,0)) {
+	bool HitLine(double length, double z_offset, int dmg, Name pufftype, Vector2 knockback, Name moveName, int flags = 0, Vector2 selfKnockback = (0,0)) {
 		FTranslatedLineTarget t;
+		
+// 		Console.Printf("HitLine Flags: %d", flags);
 		
 		// Whiff if we're outta usages
 		if (combo && !combo.CanDoMove(moveName))
@@ -110,8 +122,14 @@ extend class BaseFighter {
 		
 		bool blocked;
 		blocked = otherP.ButtonPressed(otherP.bt_left);
+		
+		// High/Low
+		if (flags & MOVE_BLOCKLOW && !otherP.ButtonPressed(BT_BACK))
+			blocked = false;
+		if (flags & MOVE_BLOCKHIGH && otherP.ButtonPressed(BT_BACK))
+			blocked = false;
+			
 		blocked |= CVar.FindCVar("sv_trainingblock").GetBool();
-// 		blocked &= !otherP.curState.InStateSequence(otherP.ResolveState('PAIN'));
 		
 		if (!otherP.curState.InStateSequence(otherP.ResolveState('IDLE')) &&
 			!otherP.curState.InStateSequence(otherP.ResolveState('BLOCK')) &&
@@ -123,18 +141,25 @@ extend class BaseFighter {
 			blocked = false;
 		}
 		
+		if (flags & MOVE_UNBLOCKABLE) blocked = false;
+		
 		if (blocked) pufftype = 'BlockPuff';
 		
 		LineAttack(Angle, length, 0, 0, 'Normal', pufftype, 0, t, z_offset);
 
 		if (t.linetarget != null) {
-			((BaseFighter)(t.linetarget)).IAmHit(self, dmg, knockback, blocked, moveName);
+			if (flags & MOVE_NOHITAIR && (BaseFighter)(t.linetarget).inAir) {
+				return false;
+			}
+		
+			((BaseFighter)(t.linetarget)).IAmHit(self, dmg, knockback, blocked, moveName, flags);
 			
 			
 			freezetics = dmg;
 			Vel += (selfKnockback.X * (1-Angle / 90),0,selfKnockback.Y);
 			
-			cancelTics = dmg+8;
+			if (!(flags & MOVE_NOCANCEL))
+				cancelTics = dmg+8;
 		}
 		
 		return t.linetarget != null;
@@ -174,6 +199,9 @@ extend class BaseFighter {
 		
 		if (ButtonDown("2")) SetStateLabel("CROUCH");
 		
+		
+		if (CheckSpecialInput("454") && ButtonPressed(bt_left)) {CancelIfDifferent("BACKDASH"); return;}
+		
 		GroundMoves();
 		
 		if ((ButtonPressed(BT_FORWARD)) && (Pos.Z == FloorZ)) {
@@ -210,8 +238,38 @@ extend class BaseFighter {
 			SetOrigin((Pos.X,Pos.Y,Pos.Z+1),false);
 			SetStateLabel("JUMP");
 		}
+	}
+	
+	void HandleRun() {
+		cancelTics = 0;
+		if (ButtonPressed(bt_right)) {
+			SetOrigin((Pos.X + 5 * (1-Angle / 90), Pos.Y, Pos.Z), true);
+			
+			if (ButtonDown("9")) {
+				Vel.Z = 10;
+				Vel.X = 5 * (1-Angle / 90);
+				SetOrigin((Pos.X,Pos.Y,Pos.Z+1),false);
+				SetStateLabel("JUMP");
+				return;
+			}
+			
+			GroundMoves();
+		} else {
+			SetStateLabel("IDLE");
+		}
+	}
+
+	
+	void HandleBackdash() {
+		cancelTics = 0;
+		SetOrigin((Pos.X - 7 * (1-Angle / 90), Pos.Y, Pos.Z), true);
 		
-		
+		if (ButtonDown("7")) {
+			Vel.Z = 10;
+			Vel.X = -5 * (1-Angle / 90);
+			SetOrigin((Pos.X,Pos.Y,Pos.Z+1),false);
+			SetStateLabel("JUMP");
+		}
 	}
 	
 	virtual void HandleCrouch() {
@@ -239,20 +297,34 @@ extend class BaseFighter {
 // 		if (CheckSpecialInput("252L")) {
 // 			CancelIfDifferent("S22X");
 // 			return;
-// 		}
-		if (CheckSpecialInput("2L")) {CancelIfDifferent("N2P"); return;}
-		if (CheckSpecialInput("2M")) {CancelIfDifferent("N2S"); return;}
-		if (CheckSpecialInput("2H")) {CancelIfDifferent("N2H"); return;}
+	// 		}
+		// Regular throw
+		if ((ButtonDown("S") && ButtonDown("L"))) {
+			CheckSpecialInput("L");
+			CheckSpecialInput("S");
+// 			Console.Printf("Throw attempt");
+			CancelIfDifferent("GRAB");
+			return;
+		}
+
+		if (CheckSpecialInput("2L")) {CancelIfDifferent("N2P"); cancelTics=4; return;}
+		if (CheckSpecialInput("2M")) {CancelIfDifferent("N2S"); cancelTics=4; return;}
+		if (CheckSpecialInput("2H")) {CancelIfDifferent("N2H"); cancelTics=4; return;}
 		
 		if (ButtonDown("2")) {
-			if (CheckSpecialInput("L")) {CancelIfDifferent("N2P"); return;}
-			if (CheckSpecialInput("M")) {CancelIfDifferent("N2S"); return;}
-			if (CheckSpecialInput("H")) {CancelIfDifferent("N2H"); return;}
+			if (CheckSpecialInput("L")) {CancelIfDifferent("N2P"); cancelTics=4; return;}
+			if (CheckSpecialInput("M")) {CancelIfDifferent("N2S"); cancelTics=4; return;}
+			if (CheckSpecialInput("H")) {CancelIfDifferent("N2H"); cancelTics=4; return;}
 		} else {
-			if (CheckSpecialInput("L")) {CancelIfDifferent("N5P"); return;}
-			if (CheckSpecialInput("M")) {CancelIfDifferent("N5S"); return;}
-			if (CheckSpecialInput("H")) {CancelIfDifferent("N5H"); return;}
+			if (CheckSpecialInput("L")) {CancelIfDifferent("N5P"); cancelTics=4; return;}
+			if (CheckSpecialInput("M")) {CancelIfDifferent("N5S"); cancelTics=4; return;}
+			if (CheckSpecialInput("H")) {CancelIfDifferent("N5H"); cancelTics=4; return;}
 		}
+		
+		// Dash
+		if (CheckSpecialInput("656")) {CancelIfDifferent("RUN"); cancelTics=4; return;}
+		
+		
 	}
 	
 	virtual void AirMoves() {
