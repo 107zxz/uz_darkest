@@ -5,6 +5,14 @@ const BT_SPECIAL = BT_RELOAD;
 const BT_UP = BT_FORWARD;
 const BT_DOWN = BT_BACK;
 
+// Local Multiplayer
+const BT_P2_LIGHT = BT_ZOOM;
+const BT_P2_MEDIUM = BT_USER2;
+const BT_P2_HEAVY = BT_USER3;
+const BT_P2_SPECIAL = BT_USER4;
+const BT_P2_UP = BT_JUMP;
+const BT_P2_DOWN = BT_TURN180;
+
 const BT_MOVECANCEL = BT_USER1;
 
 
@@ -38,6 +46,24 @@ extend class BaseFighter {
 	}
 	
 	void HandleInput() {
+		// Handle co-op buttons
+		if (players[0].buttons & BT_P2_LIGHT) players[1].cmd.buttons |= BT_LIGHT;
+		else players[1].cmd.buttons &= (0xFFFFFFFF - BT_LIGHT);
+		if (players[0].buttons & BT_P2_MEDIUM) players[1].cmd.buttons |= BT_MEDIUM;
+		else players[1].cmd.buttons &= (0xFFFFFFFF - BT_MEDIUM);
+		if (players[0].buttons & BT_P2_HEAVY) players[1].cmd.buttons |= BT_HEAVY;
+		else players[1].cmd.buttons &= (0xFFFFFFFF - BT_HEAVY);
+		if (players[0].buttons & BT_P2_SPECIAL) players[1].cmd.buttons |= BT_SPECIAL;
+		else players[1].cmd.buttons &= (0xFFFFFFFF - BT_SPECIAL);
+		if (players[0].buttons & BT_MOVEUP) players[1].cmd.buttons |= BT_UP;
+		else players[1].cmd.buttons &= (0xFFFFFFFF - BT_UP);
+		if (players[0].buttons & BT_MOVEDOWN) players[1].cmd.buttons |= BT_DOWN;
+		else players[1].cmd.buttons &= (0xFFFFFFFF - BT_DOWN);
+		if (players[0].buttons & BT_SPEED) players[1].cmd.buttons |= BT_MOVELEFT;
+		else players[1].cmd.buttons &= (0xFFFFFFFF - BT_MOVELEFT);
+		if (players[0].buttons & BT_STRAFE) players[1].cmd.buttons |= BT_MOVERIGHT;
+		else players[1].cmd.buttons &= (0xFFFFFFFF - BT_MOVERIGHT);
+	
         // Add to input queue
         for (int i = BUF_LEN-1; i > 0; i--) {
             inputQueue[i] = inputQueue[i-1];

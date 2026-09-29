@@ -75,3 +75,23 @@ class SlashPuff : Actor {
 		Stop;
 	}
 }
+
+class ThisIsYou : Actor {
+	Default {
+		Scale 0.1;
+// 		RenderStyle 'Add';
+		+NOGRAVITY;
+		+BRIGHT;
+		+NOINTERACTION;
+		Height 1;
+	}
+	
+	States {
+	Spawn:
+		YOUU A 15;
+		YOUU AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 1 {
+			Vel.Z += 0.15;
+		}
+		Stop;
+	}
+}

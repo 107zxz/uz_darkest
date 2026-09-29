@@ -6,7 +6,15 @@ extend class BaseFighter {
 		pIdx = 0;
 		if (Angle == 180) {
 			pIdx = 1;
+			
+			
+			// Colouring time
+//			TODO: Fix paletting for aesprite files before I can use translations
+// 			A_SetTranslation("BluueAbbey");
 		}
+		
+		
+			
 		
 		// TODO: DEBUG CODE: REMOVE THIS
 		ThinkerIterator pFinder = ThinkerIterator.Create("BaseFighter");
@@ -16,6 +24,10 @@ extend class BaseFighter {
 				otherP = mo;
 				break;
 			}
+		}
+		
+		if (pIdx == consoleplayer && playeringame[1]) {
+			Spawn('ThisIsYou',Pos + (0, 0, 55));
 		}
 	}
 

@@ -13,7 +13,7 @@ class Ancestor : PlayerPawn {
     }
     
         
-    override void PostBeginPlay() {
+    void Setup() {
         // Spawn in a fighter
         ThinkerIterator fighterFinder = ThinkerIterator.Create("BaseFighter");
         allFighters[0] = (BaseFighter)(fighterFinder.Next());
@@ -51,4 +51,12 @@ class Ancestor : PlayerPawn {
 			Player.FOV = max(ATan(playerDistance/2/-Pos.Y)*1.9,85);
         }
     }
+}
+
+class AncestorReminderer : StaticEventHandler {
+	override void WorldLoaded (WorldEvent e) {
+		((Ancestor)(players[consoleplayer].mo)).Setup();
+		((Ancestor)(players[consoleplayer].mo)).allFighters[0].PostBeginPlay();
+		((Ancestor)(players[consoleplayer].mo)).allFighters[1].PostBeginPlay();
+	}
 }

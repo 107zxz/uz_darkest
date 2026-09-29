@@ -6,6 +6,7 @@ class BaseFighter : Actor abstract {
 	PainChance 255;
 	PainSound "hit01";
 	Health 150;
+// 	Health 18;
 	
 	Friction 0.8;
 	  
@@ -13,9 +14,6 @@ class BaseFighter : Actor abstract {
 	+CASTSPRITESHADOW;
 	+NOBLOOD;
 	+BRIGHT;
-	
-// 	+CLIENTSIDE;
-
 	
 	+BUDDHA;
 	}

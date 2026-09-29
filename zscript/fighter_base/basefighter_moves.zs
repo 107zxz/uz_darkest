@@ -31,8 +31,17 @@ extend class BaseFighter {
 	void MovesTick() {
 	
 		// DEBUG: Heal outside of combos
-		if (!otherP.combo)
+		if (!otherP.combo && Cvar.FindCVar("sv_trainingregen").GetBool())
 			GiveBody(3);
+		// Death
+		else if (Health < 18) {
+			CancelIfDifferent('FALL');
+			return;
+		} else if (otherP.Health < 18) {
+			if (InStateSequence(curstate, ResolveState("IDLE")) || InStateSequence(curstate, ResolveState("JUMP")))
+				CancelIfDifferent('WIN');
+			return;
+		}
 	
 		// This one's important, if we land in an air move early cancel it.
 		// Also if you're getting hit and land end the combo
@@ -40,6 +49,7 @@ extend class BaseFighter {
 // 			Console.Printf("Hiii");
 			SetStateLabel("LAND");
 			inAir = Pos.Z != FloorZ;
+			Vel.Z = 0;
 			return;
 		}
 		inAir = Pos.Z != FloorZ;
@@ -137,11 +147,20 @@ extend class BaseFighter {
 			!otherP.curState.InStateSequence(otherP.ResolveState('WALK')) &&
 			!otherP.curState.InStateSequence(otherP.ResolveState('CROUCH')) &&
 			!otherP.curState.InStateSequence(otherP.ResolveState('JUMP'))
-			) {
-			blocked = false;
+		) {
+			blocked = false; 
 		}
 		
 		if (flags & MOVE_UNBLOCKABLE) blocked = false;
+		
+		if (flags & MOVE_GRAB) {
+			if (otherP.curState.InStateSequence(otherP.ResolveState('BLOCK')) ||
+			otherP.curState.InStateSequence(otherP.ResolveState('CROUCHBLOCK'))) {
+				return false;
+			}
+			
+			blocked = false;
+		}
 		
 		if (blocked) pufftype = 'BlockPuff';
 		

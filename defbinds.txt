@@ -1,3 +1,18 @@
+unbind mouse1
+unbind mouse2
+unbind ltrigger
+unbind rtrigger
+unbind e
+unbind pad_a
+unbind r
+unbind pad_x
+unbind pgup
+unbind ins
+unbind shift
+unbind mouse3
+unbind rthumb
+
+
 bind j "+ATTACK"
 bind k "+ALTATTACK"
 bind l "+USE"

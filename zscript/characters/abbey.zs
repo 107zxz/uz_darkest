@@ -49,6 +49,17 @@ class Abbey : BaseFighter {
 	TNT1 A 0 A_SetSize(12);
 	MABK AB 8;
 	Goto IDLE;
+	
+	FALL:
+	EBFL ABC 8;
+	EBFL C -1;
+	Loop;
+	
+	WIN:
+	EBWN ABCD 6;
+	WINLAUGH:
+	EBWN EF 10;
+	Loop;
 
 	BLOCK:
 	EBBK AA 5 A_SetSize(12);
@@ -61,7 +72,7 @@ class Abbey : BaseFighter {
 	GRAB:
 	EBGB A 3 {Vel.X += (1-Angle / 90)*2;}
 	TNT1 A 0 {
-		if (HitLine(32,0,0,'SmashPuff',(0,0),'GRAB',MOVE_UNBLOCKABLE | MOVE_NOCANCEL | MOVE_NOHITAIR)) {
+		if (HitLine(32,0,0,'SmashPuff',(0,0),'GRAB',MOVE_GRAB | MOVE_NOCANCEL | MOVE_NOHITAIR)) {
 			SetStateLabel("THROW");
 		}
 	}
@@ -93,47 +104,47 @@ class Abbey : BaseFighter {
 // 		otherP.SetOrigin((Pos.X+20 * (1-Angle/90),0,0),true);
 		HitLine(96,0,HITSTUN_HEAVY,'SlashPuff',(2,6),'THROW2', MOVE_NOCANCEL);
 	}
-	EB22 A 8;
+	EB22 A 13;
 	Goto IDLE;
 	
 	J5P:
 	---- A 1;
 	EBJP A 2;
-	EBJP A 8 HitLine(32,-16,HITSTUN_MEDIUM,'SmashPuff',(0.5,2),'J5P');
+	EBJP A 8 HitLine(32,-16,HITSTUN_MEDIUM,'SmashPuff',(0.5,2),'J5P', MOVE_BLOCKHIGH);
 	Goto JUMP;
 	
 	J5S:
 	---- A 1;
 	EBJP A 3;
 	EBJS A 2 {
-		HitLine(32,-8,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S') ||
-		HitLine(32,0,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S') ||
-		HitLine(32,-16,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S');
+		HitLine(32,-8,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S', MOVE_BLOCKHIGH) ||
+		HitLine(32,0,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S', MOVE_BLOCKHIGH) ||
+		HitLine(32,-16,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S', MOVE_BLOCKHIGH);
 	}
 	EBJS A 2 {
-		HitLine(32,-8,HITSTUN_LIGHT,'SlashPuff',(0.75,0),'J5S2') ||
-		HitLine(32,0,HITSTUN_LIGHT,'SlashPuff',(0.75,0),'J5S2') ||
-		HitLine(32,-16,HITSTUN_LIGHT,'SlashPuff',(0.75,0),'J5S2');
+		HitLine(32,-8,HITSTUN_LIGHT,'SlashPuff',(0.75,0),'J5S2', MOVE_BLOCKHIGH) ||
+		HitLine(32,0,HITSTUN_LIGHT,'SlashPuff',(0.75,0),'J5S2', MOVE_BLOCKHIGH) ||
+		HitLine(32,-16,HITSTUN_LIGHT,'SlashPuff',(0.75,0),'J5S2', MOVE_BLOCKHIGH);
 	}
-	EBJS A 2 {
-		HitLine(32,-8,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S3') ||
-		HitLine(32,0,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S3') ||
-		HitLine(32,-16,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S3');
-	}
-	EBJS A 2 {
-		HitLine(32,-8,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S4') ||
-		HitLine(32,0,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S4') ||
-		HitLine(32,-16,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S4');
-	}
+// 	EBJS A 2 {
+// 		HitLine(32,-8,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S3', MOVE_BLOCKHIGH) ||
+// 		HitLine(32,0,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S3',MOVE_BLOCKHIGH) ||
+// 		HitLine(32,-16,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S3',MOVE_BLOCKHIGH);
+// 	}
+// 	EBJS A 2 {
+// 		HitLine(32,-8,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S4',MOVE_BLOCKHIGH) ||
+// 		HitLine(32,0,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S4',MOVE_BLOCKHIGH) ||
+// 		HitLine(32,-16,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S4',MOVE_BLOCKHIGH);
+// 	}
 	Goto JUMP;
 	
 	J5H:
 	---- A 1;
 	EBJP A 4;
 	EBJH A 8 {
-		HitLine(64,0,HITSTUN_HEAVY,'SlashPuff',(1,0),'J5H', 0, (0,2.5)) ||
-		HitLine(64,-16,HITSTUN_HEAVY,'SlashPuff',(1,0),'J5H', 0, (0,2.5)) ||
-		HitLine(64,16,HITSTUN_HEAVY,'SlashPuff',(1,0),'J5H', 0, (0,2.5));
+		HitLine(64,0,HITSTUN_HEAVY,'SlashPuff',(1,0),'J5H', MOVE_BLOCKHIGH, (0,2.5)) ||
+		HitLine(64,-16,HITSTUN_HEAVY,'SlashPuff',(1,0),'J5H', MOVE_BLOCKHIGH, (0,2.5)) ||
+		HitLine(64,16,HITSTUN_HEAVY,'SlashPuff',(1,0),'J5H', MOVE_BLOCKHIGH, (0,2.5));
 	}
 	Goto JUMP;
 	

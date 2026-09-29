@@ -20,10 +20,11 @@ OptionMenu "MainMenu"
 // 	Option "P1 Character", "sv_p1fighter", "FighterOptions", "", 1
 // 	Option "P2 Character", "sv_p2fighter", "FighterOptions", "", 1
 	Option "P2 Guard", "sv_trainingblock", "DummyBlocking", "", 1
+	Option "Automatic Health Regen", "sv_trainingregen", "DummyBlocking", "", 1
 	
 	StaticText ""
 	
-	StaticText "Controls"
+	StaticText "P1 Controls"
 	Control "Up", "+forward"
 	Control "Down", "+back"
 	Control "Left", "+moveleft"
@@ -33,6 +34,19 @@ OptionMenu "MainMenu"
 	Control "Medium Attack", "+altattack"
 	Control "Heavy Attack", "+use"
 	Control "Special Function", "+reload"
+	
+	StaticText ""
+	
+	StaticText "P2 Controls"
+	Control "Up", "+moveup"
+	Control "Down", "+movedown"
+	Control "Left", "+speed"
+	Control "Right", "+strafe"
+	StaticText ""
+	Control "Light Attack", "+zoom"
+	Control "Medium Attack", "+user2"
+	Control "Heavy Attack", "+user3"
+	Control "Special Function", "+user4"
 	
 	StaticText ""
 	StaticText ""

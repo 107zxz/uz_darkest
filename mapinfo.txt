@@ -1,6 +1,7 @@
 GameInfo {
 	PlayerClasses = "Ancestor"
 	StatusBarClass = "BlankBar"
+	AddEventHandlers = "AncestorReminderer"
 	
 	titlepage = "TITLEPIC"
 	
