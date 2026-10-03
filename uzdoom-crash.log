@@ -1,0 +1,22 @@
+*** Fatal Error ***
+Address not mapped to object (signal 11)
+Address: 0x639c8b5656f8
+
+System: Linux nixos 6.18.39 #1-NixOS SMP PREEMPT_DYNAMIC Sat Jul 18 14:53:38 UTC 2026 x86_64 GNU/Linux
+
+UZDoom version 31c9c39f272c25c2298196e31a5e7b83d6d05399.0+31c9c39-m (31c9c39f272c25c2298196e31a5e7b83d6d05399)
+Command line: /home/amy/repos/UZDoom/build/uzdoom -iwad base.ipk3 -file .
+Wad 0: uzdoom.pk3
+Wad 1: game_support.pk3
+Wad 2: base.ipk3
+Wad 3: game_widescreen_gfx.pk3
+Wad 4: /home/amy/repos/doommods/uz_darkest/
+
+Current map: MAP01
+
+viewx = 80.000000
+viewy = -64.000000
+viewz = 48.750000
+viewangle = 90.000000
+
+Executing: gdb --quiet --batch --command=gdb-respfile-XCjSF4

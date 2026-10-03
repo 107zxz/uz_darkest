@@ -10,7 +10,8 @@ enum MoveFlags {
 	MOVE_NOHITAIR = 8,
 	MOVE_NOHITGROUND = 16,
 	MOVE_NOCANCEL = 32,
-	MOVE_GRAB = 64
+	MOVE_GRAB = 64,
+	MOVE_NOSCREENFREEZE = 128
 }
 
 extend class BaseFighter {
@@ -85,7 +86,8 @@ extend class BaseFighter {
 		if (blocked) {
 // 			Console.Printf("Flags: %d", flags);
 		
-			freezetics = dmg/2;
+			if (!(flags & MOVE_NOSCREENFREEZE))
+				freezetics = dmg/2;
 			Vel = (knockback.X * -(1-Angle / 90),0,0);
 			inflictor.Vel += (knockback.X * (1-Angle / 90),0,0);
 			
@@ -105,7 +107,8 @@ extend class BaseFighter {
 		
 		inflictor.combo.AddMoveToCombo(moveName, dmg/7.0*0.1+0.9);
 		
-		freezetics = dmg;
+		if (!(flags & MOVE_NOSCREENFREEZE))
+			freezetics = dmg;
 		Vel = (knockback.X * -(1-Angle / 90),0,knockback.Y);
 		
 		// Juggle bonus

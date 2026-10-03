@@ -148,6 +148,10 @@ class BlankBar : BaseStatusBar {
 			}
 		}
 	}
+	
+	override void Tick() {
+	
+	}
 
 	override void Draw(int state, double TicFrac) {
 		Super.Draw(state, TicFrac);
@@ -177,8 +181,8 @@ class BlankBar : BaseStatusBar {
 		float HPSCALE = 366.0/150.0;
 		Fill(color(255,255,255,0),-p1Health * HPSCALE,62,p1Health * HPSCALE,23,DI_SCREEN_CENTER_TOP|DI_ITEM_LEFT_TOP);
 		Fill(color(255,255,255,0),0,62,enemyhealth * HPSCALE,23,DI_SCREEN_CENTER_TOP|DI_ITEM_LEFT_TOP);
-		Fill(color(255,255,128,0),-p1Health * HPSCALE,72,p1Health * HPSCALE,13,DI_SCREEN_CENTER_TOP|DI_ITEM_LEFT_TOP);
-		Fill(color(255,255,128,0),0,72,enemyhealth * HPSCALE,13,DI_SCREEN_CENTER_TOP|DI_ITEM_LEFT_TOP);
+		Fill(color(255,255,128,0),-p1Health * HPSCALE,72,p1Health * HPSCALE,14,DI_SCREEN_CENTER_TOP|DI_ITEM_LEFT_TOP);
+		Fill(color(255,255,128,0),0,72,enemyhealth * HPSCALE,14,DI_SCREEN_CENTER_TOP|DI_ITEM_LEFT_TOP);
 
 		DrawImage("textures/uieclipse.ase", (0, 20), DI_SCREEN_CENTER_TOP|DI_ITEM_TOP, 1.0);
 		

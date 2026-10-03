@@ -234,7 +234,7 @@ class Abbey : BaseFighter {
 	EB26 C 3 {
 		Actor gar = Spawn('SuperGarlic', Pos + (-10,0,38));
 		gar.target = self;
-		gar.Vel.X = 2 * (1 - Angle / 90);
+		gar.Vel.X = 1.5 * (1 - Angle / 90);
 		gar.Vel.Z = 10;
 	}
 	EB26 DD 3;

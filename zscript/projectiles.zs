@@ -28,7 +28,7 @@ class SuperGarlic : Actor {
 	States {
 	SPAWN:
 		GARL ABCDEFG 2 {
-			if (BaseFighter(target).HitLine(7,(Abs(Pos.X - target.Pos.X),Pos.Z-32),HITSTUN_MEDIUM,'SmashPuff',(0.3,0),'EB236X')) {
+			if (BaseFighter(target).HitLine(7,(Abs(Pos.X - target.Pos.X),Pos.Z-32),HITSTUN_MEDIUM,'SmashPuff',(0.3,0),'EB236X',MOVE_NOSCREENFREEZE)) {
 				if (bounces < 1) {
 					SetOrigin((Pos.X,0,target.Height),true);
 					Vel.X /= Abs(Vel.X) * 1.5;

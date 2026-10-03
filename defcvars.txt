@@ -4,6 +4,8 @@ version 228
 set wipetype 0
 set skill 0
 set vid_aspect 2
+set vid_cropaspect true
+set vid_maxfps 60
 set crosshair 0
 set hud_oldscale false
 
