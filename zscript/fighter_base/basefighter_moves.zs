@@ -121,7 +121,7 @@ extend class BaseFighter {
 		A_Quake(dmg/3, dmg/2, 0,20000);
 	}
 	
-	bool HitLine(double length, double z_offset, int dmg, Name pufftype, Vector2 knockback, Name moveName, int flags = 0, Vector2 selfKnockback = (0,0)) {
+	bool HitLine(double length, Vector2 offset, int dmg, Name pufftype, Vector2 knockback, Name moveName, int flags = 0, Vector2 selfKnockback = (0,0)) {
 		FTranslatedLineTarget t;
 		
 // 		Console.Printf("HitLine Flags: %d", flags);
@@ -164,7 +164,7 @@ extend class BaseFighter {
 		
 		if (blocked) pufftype = 'BlockPuff';
 		
-		LineAttack(Angle, length, 0, 0, 'Normal', pufftype, 0, t, z_offset);
+		LineAttack(Angle, length, 0, 0, 'Normal', pufftype, 0, t, offset.y, offset.x);
 
 		if (t.linetarget != null) {
 			if (flags & MOVE_NOHITAIR && (BaseFighter)(t.linetarget).inAir) {
@@ -219,7 +219,6 @@ extend class BaseFighter {
 		if (ButtonDown("2")) SetStateLabel("CROUCH");
 		
 		
-		if (CheckSpecialInput("454") && ButtonPressed(bt_left)) {CancelIfDifferent("BACKDASH"); return;}
 		
 		GroundMoves();
 		
@@ -313,10 +312,39 @@ extend class BaseFighter {
 	
 	virtual void GroundMoves() {
 	
-// 		if (CheckSpecialInput("252L")) {
-// 			CancelIfDifferent("S22X");
+		if (CheckSpecialInput("626H") || CheckSpecialInput("623H")) {
+			CancelIfDifferent("623H");
+			return;
+ 		}
+// 		if (CheckSpecialInput("626H")) {
+// 			CancelIfDifferent("623H");
 // 			return;
-	// 		}
+//  		}
+		if (CheckSpecialInput("214L")) {
+			CancelIfDifferent("214L");
+			return;
+ 		}
+		if (CheckSpecialInput("214M")) {
+			CancelIfDifferent("214M");
+			return;
+ 		}
+		if (CheckSpecialInput("214H")) {
+			CancelIfDifferent("214H");
+			return;
+ 		}
+		if (CheckSpecialInput("236L")) {
+			CancelIfDifferent("236L");
+			return;
+ 		}
+		if (CheckSpecialInput("236M")) {
+			CancelIfDifferent("236M");
+			return;
+ 		}
+		if (CheckSpecialInput("236H")) {
+			CancelIfDifferent("236H");
+			return;
+ 		}
+		
 		// Regular throw
 		if ((ButtonDown("S") && ButtonDown("L"))) {
 			CheckSpecialInput("L");
@@ -342,6 +370,7 @@ extend class BaseFighter {
 		
 		// Dash
 		if (CheckSpecialInput("656")) {CancelIfDifferent("RUN"); cancelTics=4; return;}
+		if (CheckSpecialInput("454") && ButtonPressed(bt_left)) {CancelIfDifferent("BACKDASH"); cancelTics=8; return;}
 		
 		
 	}

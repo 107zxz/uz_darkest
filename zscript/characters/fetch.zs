@@ -25,31 +25,31 @@ class Fetch : BaseFighter {
 	J5P:
 	---- A 1;
 	EBJP A 2;
-	EBJP A 8 HitLine(32,-16,HITSTUN_MEDIUM,'SmashPuff',(0.5,2),'J5P');
+	EBJP A 8 HitLine(32,(0,-16),HITSTUN_MEDIUM,'SmashPuff',(0.5,2),'J5P');
 	Goto JUMP;
 	
 	J5S:
 	---- A 1;
 	EBJP A 3;
 	EBJS A 2 {
-		HitLine(32,-8,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S') ||
-		HitLine(32,0,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S') ||
-		HitLine(32,-16,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S');
+		HitLine(32,(0,-8),HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S') ||
+		HitLine(32,(0,0),HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S') ||
+		HitLine(32,(0,-16),HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S');
 	}
 	EBJS A 2 {
-		HitLine(32,-8,HITSTUN_LIGHT,'SlashPuff',(0.75,0),'J5S2') ||
-		HitLine(32,0,HITSTUN_LIGHT,'SlashPuff',(0.75,0),'J5S2') ||
-		HitLine(32,-16,HITSTUN_LIGHT,'SlashPuff',(0.75,0),'J5S2');
+		HitLine(32,(0,-8),HITSTUN_LIGHT,'SlashPuff',(0.75,0),'J5S2') ||
+		HitLine(32,(0,0),HITSTUN_LIGHT,'SlashPuff',(0.75,0),'J5S2') ||
+		HitLine(32,(0,-16),HITSTUN_LIGHT,'SlashPuff',(0.75,0),'J5S2');
 	}
 	EBJS A 2 {
-		HitLine(32,-8,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S3') ||
-		HitLine(32,0,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S3') ||
-		HitLine(32,-16,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S3');
+		HitLine(32,(0,-8),HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S3') ||
+		HitLine(32,(0,0),HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S3') ||
+		HitLine(32,(0,-16),HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S3');
 	}
 	EBJS A 2 {
-		HitLine(32,-8,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S4') ||
-		HitLine(32,0,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S4') ||
-		HitLine(32,-16,HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S4');
+		HitLine(32,(0,-8),HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S4') ||
+		HitLine(32,(0,0),HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S4') ||
+		HitLine(32,(0,-16),HITSTUN_MEDIUM,'SlashPuff',(0.75,0),'J5S4');
 	}
 	Goto JUMP;
 	
@@ -57,9 +57,9 @@ class Fetch : BaseFighter {
 	---- A 1;
 	EBJP A 4;
 	EBJH A 8 {
-		HitLine(64,0,HITSTUN_HEAVY,'SlashPuff',(1,0),'J5H', 0, (0,2.5)) ||
-		HitLine(64,-16,HITSTUN_HEAVY,'SlashPuff',(1,0),'J5H', 0, (0,2.5)) ||
-		HitLine(64,16,HITSTUN_HEAVY,'SlashPuff',(1,0),'J5H', 0, (0,2.5));
+		HitLine(64,(0,0),HITSTUN_HEAVY,'SlashPuff',(1,0),'J5H', 0, (0,2.5)) ||
+		HitLine(64,(0,-16),HITSTUN_HEAVY,'SlashPuff',(1,0),'J5H', 0, (0,2.5)) ||
+		HitLine(64,(0,16),HITSTUN_HEAVY,'SlashPuff',(1,0),'J5H', 0, (0,2.5));
 	}
 	Goto JUMP;
 	
@@ -74,7 +74,7 @@ class Fetch : BaseFighter {
 	N5P:
 	---- A 1;
 	FETW BC 1;
-	FETW D 2 HitLine(32,0,HITSTUN_LIGHT,'SmashPuff',(0.4,0),'N5P');
+	FETW D 2 HitLine(32,(0,0),HITSTUN_LIGHT,'SmashPuff',(0.4,0),'N5P');
 	FETW E 2;
 	FETW FG 1;
 	Goto IDLE;
@@ -84,9 +84,9 @@ class Fetch : BaseFighter {
 	EB5S B 3;
 	EB5S C 2;
 	EB5S D 3 {
-		HitLine(96,0,HITSTUN_MEDIUM,'SlashPuff',(2,0),'N5S') ||
-		HitLine(96,32,HITSTUN_MEDIUM,'SlashPuff',(2,0),'N5S') ||
-		HitLine(96,64,HITSTUN_MEDIUM,'SlashPuff',(2,0),'N5S');
+		HitLine(96,(0,0),HITSTUN_MEDIUM,'SlashPuff',(2,0),'N5S') ||
+		HitLine(96,(0,32),HITSTUN_MEDIUM,'SlashPuff',(2,0),'N5S') ||
+		HitLine(96,(0,64),HITSTUN_MEDIUM,'SlashPuff',(2,0),'N5S');
 	}
 	EB5S E 2;
 	Goto IDLE;
@@ -95,8 +95,8 @@ class Fetch : BaseFighter {
 	---- A 1;
 	EB5H BCDE 2;
 	EB5H F 7 {
-		HitLine(96,0,HITSTUN_HEAVY,'SlashPuff',(0.4,6),'N5H') ||
-		HitLine(96,-16,HITSTUN_HEAVY,'SlashPuff',(0.4,6),'N5H');
+		HitLine(96,(0,0),HITSTUN_HEAVY,'SlashPuff',(0.4,6),'N5H') ||
+		HitLine(96,(0,-16),HITSTUN_HEAVY,'SlashPuff',(0.4,6),'N5H');
 	}
 	EB5H GH 2;
 	Goto IDLE;
@@ -104,7 +104,7 @@ class Fetch : BaseFighter {
 	N2P:
 	---- A 1;
 	EBCP A 1;
-	EBCP A 2 HitLine(32,-16,HITSTUN_LIGHT,'SmashPuff',(0.4,0),'N2P');
+	EBCP A 2 HitLine(32,(0,-16),HITSTUN_LIGHT,'SmashPuff',(0.4,0),'N2P');
 	EBCP B 3;
 	EBCH A 3;
 	Goto IDLE;
@@ -112,7 +112,7 @@ class Fetch : BaseFighter {
 	N2S:
 	---- A 1;
 	EBCM A 3;
-	EBCM B 3 HitLine(64,-16,HITSTUN_MEDIUM,'SlashPuff',(0.4,6),'N2S');
+	EBCM B 3 HitLine(64,(0,-16),HITSTUN_MEDIUM,'SlashPuff',(0.4,6),'N2S');
 	EBCM C 3;
 	EBCH A 3;
 	Goto IDLE;
@@ -121,8 +121,8 @@ class Fetch : BaseFighter {
 	---- A 1;
 	EB2H BCD 3;
 	EB2H E 3 {
-		HitLine(64,32,HITSTUN_MEDIUM,'SlashPuff',(0.4,6),'N2H') ||
-		HitLine(64,0,HITSTUN_MEDIUM,'SlashPuff',(0.4,6),'N2H');
+		HitLine(64,(0,32),HITSTUN_MEDIUM,'SlashPuff',(0.4,6),'N2H') ||
+		HitLine(64,(0,0),HITSTUN_MEDIUM,'SlashPuff',(0.4,6),'N2H');
 	}
 	EB2H FG 3;
 	Goto IDLE;

@@ -15,6 +15,13 @@ OptionMenu "MainMenu"
 {
 	Title "Debug Menu"
 	
+	StaticText "Command List:"
+	StaticText "236X -> Garlic Toss", "White"
+	StaticText "214X -> Spear Slip/Stab/Sear", "White"
+	StaticText "236H -> Shake Dry (Reversal)", "White"
+	
+	StaticText ""
+	
 	StaticText "Training Options"
 	Command "Reset Positions", "map map01", 1, 1	StaticText ""
 // 	Option "P1 Character", "sv_p1fighter", "FighterOptions", "", 1
