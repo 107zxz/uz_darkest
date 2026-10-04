@@ -21,6 +21,27 @@ class BlankBar : BaseStatusBar {
 // 		rematchScreen = true;
 	}
 	
+	void UpdateChain(BaseFighter p, bool rightSide) {
+		int comboLength = 0;
+		if (p.combo != null)
+			comboLength = p.combo.hits;
+		int comboChain = 1;
+		if (p.combo != null)
+			comboChain = p.combo.chain;
+			
+		if (comboLength > 1) {
+			if (rightSide) chainFade2 = 1.0;
+			else chainFade = 1.0;
+		} else {
+		
+			if (rightSide) {
+				chainFade2 -= 2.0/35.0;
+			} else {
+				chainFade -= 2.0/35.0;
+			}
+		}
+	}
+	
 	void DrawChain(BaseFighter p, bool rightSide) {
 		
 		string chainTex = "textures/CHAIN.ase";
@@ -54,16 +75,11 @@ class BlankBar : BaseStatusBar {
 				else DrawImage(chainTex,((-32)*-1,-72), chainFlags,0.4);
 // 				DrawImage(chainTex,(-32,0), chainFlags,0.8);
 			}
-
-			if (rightSide) chainFade2 = 1.0;
-			else chainFade = 1.0;
 		} else {
 		
 			if (rightSide) {
-				chainFade2 -= 1.0/35.0;
 				DrawImage(chainBreakTex,(32,-32), chainFlags,chainFade2);
 			} else {
-				chainFade -= 1.0/35.0;
 				DrawImage(chainBreakTex,(-32,-32), chainFlags,chainFade);
 			}
 		} 
@@ -77,14 +93,12 @@ class BlankBar : BaseStatusBar {
 		}
 	}
 	
-	void DrawScreenFX(int p1hp, int p2hp) {
+	void UpdateScreenFX(int p1hp, int p2hp) {
 		if ((p1hp <= 17 || p2hp <= 17) && !rematchScreen) {
-			screenFadeIn -= 1.0/35;
+			screenFadeIn -= 4.0/35;
 			
-			if (screenFadeIn <= 1.0 * 6)
-				DrawString(trainingFont,"ABBEY WINS",(360,360),9,Font.CR_BRICK,1,-1,4,(3,3));
 		} else if (screenFadeIn <= 1.0) {
-			screenFadeIn += 1.0/35;
+			screenFadeIn += 2.0/35;
 		} else {
 			screenFadeIn = 1.0*10;
 		}
@@ -102,10 +116,36 @@ class BlankBar : BaseStatusBar {
 			}
 		}
 		
+		if (rematchScreen) {
+			if (((Ancestor)(players[0].mo)).allFighters[0].inputQueue[0] & BT_ATTACK) {
+				p1rematch = true;
+			}
+			
+			if (((Ancestor)(players[0].mo)).allFighters[1].inputQueue[0] & BT_ATTACK) {
+				p2rematch = true;
+			}
+		}
+		
+		if (rematchscreen && p1rematch && p2rematch) {
+			p1rematch = false;
+			p2rematch = false;
+			rematchScreen = false;
+			p1rounds = 0;
+			p2rounds = 0;
+			screenFadeIn = 0;
+			Level.ChangeLevel("MAP01", 0, 0);
+		}
+	}
+	
+	void DrawScreenFX(int p1hp, int p2hp) {
+		if ((p1hp <= 17 || p2hp <= 17) && !rematchScreen) {
+			
+			if (screenFadeIn <= 1.0 * 6)
+				DrawString(trainingFont,"ABBEY WINS",(360,360),9,Font.CR_BRICK,1,-1,4,(3,3));
+		}
+		
 		Fill(color(255,0,0,0),0,0,1200,600 - screenFadeIn*800);
 		Fill(color(255,0,0,0),0,screenFadeIn*800,1200,800);
-		
-		
 		
 		if (rematchScreen) {
 			Fill(color(96,0,0,64),0,0,1200,800);
@@ -115,16 +155,6 @@ class BlankBar : BaseStatusBar {
 			DrawString(trainingFont, "\"Never do anything again\"", (200,420),9,Font.CR_RED,1.0,-1,4,(3,3));
 			int p1color = Font.CR_ICE;
 			int p2color = Font.CR_ICE;
-			
-	// 		BaseFighter p1 = ((Ancestor)(players[0].mo)).allFighters[0];
-			
-			if (((Ancestor)(players[0].mo)).allFighters[0].inputQueue[0] & BT_ATTACK) {
-				p1rematch = true;
-			}
-			
-			if (((Ancestor)(players[0].mo)).allFighters[1].inputQueue[0] & BT_ATTACK) {
-				p2rematch = true;
-			}
 			
 			if (p1rematch) p1color = Font.CR_GOLD;
 			if (p2rematch) p2color = Font.CR_GOLD;
@@ -136,21 +166,23 @@ class BlankBar : BaseStatusBar {
 				DrawString(trainingFont, ">Rematch?", (650,510),9,p2color,1.0,-1,4,(3,3));
 				DrawString(trainingFont, " Rematch?", (100,510),9,p1color,1.0,-1,4,(3,3));
 			}
-			
-			if (p1rematch && p2rematch) {
-				p1rematch = false;
-				p2rematch = false;
-				rematchScreen = false;
-				p1rounds = 0;
-				p2rounds = 0;
-				screenFadeIn = 0;
-				Level.ChangeLevel("MAP01", 0, 0);
-			}
 		}
 	}
 	
 	override void Tick() {
-	
+		Super.Tick();
+		
+		BaseFighter p1 = ((Ancestor)(players[0].mo)).allFighters[0];
+		BaseFighter p2 = ((Ancestor)(players[0].mo)).allFighters[1];
+		
+		if (!p1 || !p2) return;
+		
+		int p1Health = ((Ancestor)(players[0].mo)).allFighters[0].Health;
+		int enemyhealth = ((Ancestor)(players[0].mo)).allFighters[1].Health;
+		
+		UpdateChain(p1,false);
+		UpdateChain(p2,true);
+		UpdateScreenFX(p1Health, enemyhealth);
 	}
 
 	override void Draw(int state, double TicFrac) {

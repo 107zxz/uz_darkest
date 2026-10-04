@@ -5,4 +5,17 @@ Texture "BRDR_B", 64, 128
 {
 }
 
+Texture "M_DOOM", 1, 1 {}
+
+Texture "M_SKULL1", 1, 1 {}
+Texture "M_SKULL2", 1, 1 {}
+Texture "M_NGAME", 1, 1 {}
+Texture "M_OPTION", 1, 1 {}
+Texture "M_LOADG", 1, 1 {}
+Texture "M_SAVEG", 1, 1 {}
+Texture "M_QUITG", 1, 1 {}
+Texture "M_EPISOD", 1, 1 {}
+Texture "M_NEWG", 1, 1 {}
+Texture "M_SKILL", 1, 1 {}
+
 // End of texture definitions
