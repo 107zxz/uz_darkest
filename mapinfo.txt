@@ -19,6 +19,7 @@ DoomEdNums {
 	12001 = Maple
 	12002 = Fetch
 	12003 = Abbey
+	12004 = Mishka
 	11002 = GrassDeco
 	11003 = BushDeco
 	11004 = TreelineDeco
