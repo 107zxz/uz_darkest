@@ -3,6 +3,7 @@ version 5.0.0
 #include "zscript/math.zs"
 #include "zscript/effects.zs"
 #include "zscript/stages/forest/deco.zs"
+#include "zscript/stages/eyeofthestorm/deco.zs"
 #include "zscript/camera.zs"
 #include "zscript/ui/fightui.zs"
 

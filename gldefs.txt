@@ -5,3 +5,7 @@ Material Texture "textures/uibarsfront.ase" {
 Material Texture "textures/uieclipse.ase" {
 // 	 shader "shaders/eclipseshader.fp"
 }
+
+// Material Texture "tilza0" {
+// 	shader "shaders/shinyfloor.fp"
+// }

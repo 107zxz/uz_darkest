@@ -11,7 +11,8 @@ enum MoveFlags {
 	MOVE_NOHITGROUND = 16,
 	MOVE_NOCANCEL = 32,
 	MOVE_GRAB = 64,
-	MOVE_NOSCREENFREEZE = 128
+	MOVE_NOSCREENFREEZE = 128,
+	MOVE_WALLBOUNCE = 256
 }
 
 extend class BaseFighter {
@@ -115,11 +116,14 @@ extend class BaseFighter {
 		if (inAir)
 			Vel += (0, 0, 1);
 		
-		SetStateLabel('PAIN');
+		DamageMobj(inflictor, inflictor, dmg * inflictor.combo.proration, 'Normal');
+		if (flags & MOVE_WALLBOUNCE) {
+			SetStateLabel('WALLBOUNCE');
+		} else
+			SetStateLabel('PAIN');
 		
 // 		Console.Printf("%f", inflictor.combo.proration);
 		
-		DamageMobj(inflictor, inflictor, dmg * inflictor.combo.proration, 'Normal');
 		
 		A_Quake(dmg/3, dmg/2, 0,20000);
 	}

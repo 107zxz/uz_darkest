@@ -9,5 +9,7 @@ set vid_maxfps 60
 set crosshair 0
 set hud_oldscale false
 
+set gl_bloom 1
+
 set disableautosave 2
 set joykey_stop_conflict 0

@@ -13,7 +13,7 @@ class Mishka : BaseFighter {
 	Loop;
 	
 	CROUCH:
-	EBCH A 1 A_SetSize(12);
+	MICR A 1 A_SetSize(12);
 	Loop;
 	
 	WALK:
@@ -150,22 +150,16 @@ class Mishka : BaseFighter {
 	
 	N5P:
 	---- A 1;
-	EB5K BC 1;
-	EB5K D 2 HitLine(32,(0,0),HITSTUN_LIGHT,'SmashPuff',(0,0),'N5P');
-	EB5K E 2;
-	EB5K FG 1;
+	MISH BC 2;
+	MISH C 10;
+	MISH D 3 HitLine(86,(0,16),HITSTUN_HEAVY,'SlashPuff',(40,3),'N5P',MOVE_WALLBOUNCE);
+	MISH C 6;
+	MISH B 2;
 	Goto IDLE;
 	
 	N5S:
 	---- A 1;
-	EB5S B 3;
-	EB5S C 2;
-	EB5S D 3 {
-		A_SetSize(64);
-		HitLine(96,(0,0),HITSTUN_MEDIUM,'SlashPuff',(2,0),'N5S');
-	}
-	EB5S E 4;
-	TNT1 A 0 A_SetSize(12);
+	MIRL BCDEFGH 3;
 	Goto IDLE;
 	
 	N5H:
@@ -180,10 +174,11 @@ class Mishka : BaseFighter {
 	
 	N2P:
 	---- A 1;
-	EBCP A 1;
-	EBCP A 2 HitLine(32,(0,-16),HITSTUN_LIGHT,'SmashPuff',(0.4,0),'N2P');
-	EBCP B 3;
-	EBCH A 3;
+	MICR BC 2;
+	MICR C 10;
+	MICR D 3 HitLine(86,(0,-16),HITSTUN_HEAVY,'SlashPuff',(40,3),'N5P',MOVE_WALLBOUNCE);
+	MICR C 6;
+	MICR B 2;
 	Goto IDLE;
 	
 	N2S:

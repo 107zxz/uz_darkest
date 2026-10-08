@@ -24,6 +24,13 @@ DoomEdNums {
 	11003 = BushDeco
 	11004 = TreelineDeco
 	11005 = MountainDeco
+	10001 = Eye1
+	10002 = Eye2
+	10003 = Eye3
+	10004 = Eye4
+	10010 = Crystal
+	10011 = Tentacle
+	10012 = Tentacle2
 }
 
 Episode MAP01 {
@@ -40,3 +47,4 @@ DefaultMap {
 }
 
 Map MAP01 "pee" {}
+Map MAP02 "poo" {}

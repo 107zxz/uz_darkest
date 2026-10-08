@@ -50,6 +50,22 @@ class Abbey : BaseFighter {
 	EBHT ABBB 4;
 	Goto IDLE;
 	
+	WALLBOUNCE:
+	TNT1 A 0 A_Pain;
+	TNT1 A 0 A_SetSize(12);
+	EBWB AAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBB 1 {
+// 		Console.Printf("%.2f", otherP.Pos.X);
+		if (Pos.X - otherP.Pos.X > 150 && Vel.X > 0) {
+			Vel.Z = 3;
+			Vel.X = -Abs(Vel.X) / 3;
+		}
+		if (Pos.X - otherP.Pos.X < -150 && Vel.X < 0) {
+			Vel.Z = 3;
+			Vel.X = Abs(Vel.X) / 3;
+		}
+	}
+	Goto PAIN;
+	
 	FALL:
 	EBFL ABC 8;
 	EBFL C -1;
