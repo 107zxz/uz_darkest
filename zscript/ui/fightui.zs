@@ -112,7 +112,7 @@ class BlankBar : BaseStatusBar {
 				screenFadeIn = 1.0 * 6;
 			}else {
 				screenFadeIn = 0;
-				Level.ChangeLevel("MAP01", 0, 0);//CHANGELEVEL_RESETINVENTORY|CHANGELEVEL_RESETHEALTH|CHANGELEVEL_NOINTERMISSION);
+				Level.ChangeLevel(Level.Mapname, 0, 0);//CHANGELEVEL_RESETINVENTORY|CHANGELEVEL_RESETHEALTH|CHANGELEVEL_NOINTERMISSION);
 			}
 		}
 		
@@ -133,7 +133,7 @@ class BlankBar : BaseStatusBar {
 			p1rounds = 0;
 			p2rounds = 0;
 			screenFadeIn = 0;
-			Level.ChangeLevel("MAP01", 0, 0);
+			Level.ChangeLevel(Level.Mapname, 0, 0);
 		}
 	}
 	
@@ -236,7 +236,7 @@ class BlankBar : BaseStatusBar {
 		DrawScreenFX(p1.Health, p2.Health);
 		
 		// VERSION
-		DrawString(trainingFont, "'SUNLESS STRIKE' ALPHA PLAYTEST 6",(5,5));
+		DrawString(trainingFont, "'SUNLESS STRIKE' ALPHA PLAYTEST 7",(5,5));
 	}
 	
 	String buttonString(int buttons) {

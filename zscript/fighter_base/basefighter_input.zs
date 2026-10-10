@@ -116,6 +116,7 @@ extend class BaseFighter {
 	bool CheckSpecialInput(String repr) {
 	
         int matching = 0;
+		String lastMatchingDir = "";
 
         for (int b = BUF_LEN_ACTIONABLE-2; b >= 0; b--) {
 		
@@ -124,15 +125,22 @@ extend class BaseFighter {
                     ButtonInInput(repr.Mid(matching,1), inputQueue[b]) &&
                     !ButtonInInput(repr.Mid(matching,1), inputQueue[b+1])
 // 					inputQueue[b+1] & BT_MOVECANCEL == 0
-                )
+                ) || (
+					repr.Length() > 3 && 
+					!ButtonInInput(repr.Mid(matching,1), inputQueue[b]) &&
+                    ButtonInInput(repr.Mid(matching,1), inputQueue[b+1])
+				)
             ) {
 				if (inputQueue[b+1] & BT_MOVECANCEL) break;
+				
+				if (matching < repr.Length()-1) 
+					lastMatchingDir = repr.Mid(matching,1);
 				
 				matching += 1;
 				
 			}
             
-            if (matching >= repr.Length()) {
+            if (matching >= repr.Length() && (repr.Length() < 4 || ButtonInInput(lastMatchingDir, inputQueue[0]))) {
 				
 				inputQueue[1] = BT_MOVECANCEL;
 				for (int i = 2;i<BUF_LEN_ACTIONABLE;i++)

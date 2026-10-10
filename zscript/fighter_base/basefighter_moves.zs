@@ -319,7 +319,7 @@ extend class BaseFighter {
 	
 	virtual void GroundMoves() {
 	
-		if (CheckSpecialInput("626H") || CheckSpecialInput("623H")) {
+		if (CheckSpecialInput("623H")) {
 			CancelIfDifferent("623H");
 			return;
  		}
