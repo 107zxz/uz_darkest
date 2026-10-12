@@ -16,6 +16,6 @@ jobs:
       - name: Upload package artifact
         uses: actions/upload-artifact@v4
         with:
-          name: SunlessStrike.ipk3
+          name: SunlessStrike
           path: SunlessStrike.ipk3
           if-no-files-found: error
