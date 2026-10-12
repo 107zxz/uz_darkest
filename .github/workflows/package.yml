@@ -1,0 +1,21 @@
+name: Package SunlessStrike
+
+on:
+  push:
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Create package
+        run: git archive --format=zip --output=SunlessStrike.ipk3 HEAD
+
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SunlessStrike.ipk3
+          path: SunlessStrike.ipk3
+          if-no-files-found: error
