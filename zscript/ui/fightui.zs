@@ -94,6 +94,9 @@ class BlankBar : BaseStatusBar {
 	}
 	
 	void UpdateScreenFX(int p1hp, int p2hp) {
+		Ancestor ancestor = (Ancestor)(players[consoleplayer].mo);
+		if (!ancestor || !ancestor.allFighters[0] || !ancestor.allFighters[1]) return;
+
 		if ((p1hp <= 17 || p2hp <= 17) && !rematchScreen) {
 			screenFadeIn -= 4.0/35;
 			
@@ -117,11 +120,11 @@ class BlankBar : BaseStatusBar {
 		}
 		
 		if (rematchScreen) {
-			if (((Ancestor)(players[consoleplayer].mo)).allFighters[0].inputQueue[0] & BT_ATTACK) {
+			if (ancestor.allFighters[0].inputQueue[0] & BT_ATTACK) {
 				p1rematch = true;
 			}
 			
-			if (((Ancestor)(players[consoleplayer].mo)).allFighters[1].inputQueue[0] & BT_ATTACK) {
+			if (ancestor.allFighters[1].inputQueue[0] & BT_ATTACK) {
 				p2rematch = true;
 			}
 		}
@@ -171,14 +174,15 @@ class BlankBar : BaseStatusBar {
 	
 	override void Tick() {
 		Super.Tick();
-		
-		BaseFighter p1 = ((Ancestor)(players[consoleplayer].mo)).allFighters[0];
-		BaseFighter p2 = ((Ancestor)(players[consoleplayer].mo)).allFighters[1];
-		
-		if (!p1 || !p2) return;
-		
-		int p1Health = ((Ancestor)(players[consoleplayer].mo)).allFighters[0].Health;
-		int enemyhealth = ((Ancestor)(players[consoleplayer].mo)).allFighters[1].Health;
+
+		if (!players[consoleplayer].mo) return;
+		Ancestor ancestor = (Ancestor)(players[consoleplayer].mo);
+		if (!ancestor || !ancestor.allFighters[0] || !ancestor.allFighters[1]) return;
+
+		BaseFighter p1 = ancestor.allFighters[0];
+		BaseFighter p2 = ancestor.allFighters[1];
+		int p1Health = p1.Health;
+		int enemyhealth = p2.Health;
 		
 		UpdateChain(p1,false);
 		UpdateChain(p2,true);
@@ -187,14 +191,15 @@ class BlankBar : BaseStatusBar {
 
 	override void Draw(int state, double TicFrac) {
 		Super.Draw(state, TicFrac);
-		
-		BaseFighter p1 = ((Ancestor)(players[consoleplayer].mo)).allFighters[0];
-		BaseFighter p2 = ((Ancestor)(players[consoleplayer].mo)).allFighters[1];
-		
-		if (!p1 || !p2) return;
-		
-		int p1Health = ((Ancestor)(players[consoleplayer].mo)).allFighters[0].Health;
-		int enemyhealth = ((Ancestor)(players[consoleplayer].mo)).allFighters[1].Health;
+
+		if (!players[consoleplayer].mo) return;
+		Ancestor ancestor = (Ancestor)(players[consoleplayer].mo);
+		if (!ancestor || !ancestor.allFighters[0] || !ancestor.allFighters[1]) return;
+
+		BaseFighter p1 = ancestor.allFighters[0];
+		BaseFighter p2 = ancestor.allFighters[1];
+		int p1Health = p1.Health;
+		int enemyhealth = p2.Health;
 		
 		int comboLength = 0;
 		if (p1.combo != null)
