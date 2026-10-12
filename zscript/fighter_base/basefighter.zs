@@ -4,7 +4,7 @@ class BaseFighter : Actor abstract {
 	Height 53;
 	Scale 0.2;
 	PainChance 255;
-	PainSound "hit01";
+// 	PainSound "hit01";
 	Health 150;
 // 	Health 18;
 	

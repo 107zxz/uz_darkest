@@ -236,7 +236,7 @@ class BlankBar : BaseStatusBar {
 		DrawScreenFX(p1.Health, p2.Health);
 		
 		// VERSION
-		DrawString(trainingFont, "'SUNLESS STRIKE' ALPHA PLAYTEST 7",(5,5));
+		DrawString(trainingFont, "'SUNLESS STRIKE' ALPHA PLAYTEST 7.5",(5,5));
 	}
 	
 	String buttonString(int buttons) {

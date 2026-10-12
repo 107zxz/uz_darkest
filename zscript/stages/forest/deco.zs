@@ -27,7 +27,10 @@ class BushDeco : Actor {
 class TreelineDeco : Actor {
   Default {
     Radius 16;
-    Scale 0.5;
+    Scale 1.0;
+	+NOGRAVITY;
+// 	+BRIGHT;
+	+WALLSPRITE;
   }
 	
   States {
@@ -40,8 +43,10 @@ class TreelineDeco : Actor {
 class MountainDeco : Actor {
   Default {
     Radius 16;
-    Scale 0.5;
+    Scale 1.5;
 	+BRIGHT;
+	+WALLSPRITE;
+	+NOGRAVITY;
   }
 	
   States {
@@ -49,4 +54,19 @@ class MountainDeco : Actor {
     SKYA A -1;
     Loop;
   }
+}
+
+class BigClock : Actor {
+	Default {
+	Scale 1.0;
+	+BRIGHT;
+	+WALLSPRITE;
+	+NOGRAVITY;
+	}
+	
+	States {
+	SPAWN:
+		CLCK A -1;
+		Loop;
+	}
 }

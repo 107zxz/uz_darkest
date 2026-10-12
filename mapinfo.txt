@@ -31,6 +31,7 @@ DoomEdNums {
 	10010 = Crystal
 	10011 = Tentacle
 	10012 = Tentacle2
+	10006 = BigClock
 }
 
 Episode MAP01 {
@@ -43,7 +44,7 @@ Skill Default {
 
 DefaultMap {
 	PixelRatio = 1.0
-	Sky1 = "F_SKY1"
+	Sky1 = "textures/SKY1.ase"
 }
 
 Map MAP01 "pee" {}

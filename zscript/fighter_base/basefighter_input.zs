@@ -47,22 +47,24 @@ extend class BaseFighter {
 	
 	void HandleInput() {
 		// Handle co-op buttons
-		if (players[0].buttons & BT_P2_LIGHT) players[1].cmd.buttons |= BT_LIGHT;
-		else players[1].cmd.buttons &= (0xFFFFFFFF - BT_LIGHT);
-		if (players[0].buttons & BT_P2_MEDIUM) players[1].cmd.buttons |= BT_MEDIUM;
-		else players[1].cmd.buttons &= (0xFFFFFFFF - BT_MEDIUM);
-		if (players[0].buttons & BT_P2_HEAVY) players[1].cmd.buttons |= BT_HEAVY;
-		else players[1].cmd.buttons &= (0xFFFFFFFF - BT_HEAVY);
-		if (players[0].buttons & BT_P2_SPECIAL) players[1].cmd.buttons |= BT_SPECIAL;
-		else players[1].cmd.buttons &= (0xFFFFFFFF - BT_SPECIAL);
-		if (players[0].buttons & BT_MOVEUP) players[1].cmd.buttons |= BT_UP;
-		else players[1].cmd.buttons &= (0xFFFFFFFF - BT_UP);
-		if (players[0].buttons & BT_MOVEDOWN) players[1].cmd.buttons |= BT_DOWN;
-		else players[1].cmd.buttons &= (0xFFFFFFFF - BT_DOWN);
-		if (players[0].buttons & BT_SPEED) players[1].cmd.buttons |= BT_MOVELEFT;
-		else players[1].cmd.buttons &= (0xFFFFFFFF - BT_MOVELEFT);
-		if (players[0].buttons & BT_STRAFE) players[1].cmd.buttons |= BT_MOVERIGHT;
-		else players[1].cmd.buttons &= (0xFFFFFFFF - BT_MOVERIGHT);
+		if (!playeringame[1]) {
+			if (players[0].buttons & BT_P2_LIGHT) players[1].cmd.buttons |= BT_LIGHT;
+			else players[1].cmd.buttons &= (0xFFFFFFFF - BT_LIGHT);
+			if (players[0].buttons & BT_P2_MEDIUM) players[1].cmd.buttons |= BT_MEDIUM;
+			else players[1].cmd.buttons &= (0xFFFFFFFF - BT_MEDIUM);
+			if (players[0].buttons & BT_P2_HEAVY) players[1].cmd.buttons |= BT_HEAVY;
+			else players[1].cmd.buttons &= (0xFFFFFFFF - BT_HEAVY);
+			if (players[0].buttons & BT_P2_SPECIAL) players[1].cmd.buttons |= BT_SPECIAL;
+			else players[1].cmd.buttons &= (0xFFFFFFFF - BT_SPECIAL);
+			if (players[0].buttons & BT_MOVEUP) players[1].cmd.buttons |= BT_UP;
+			else players[1].cmd.buttons &= (0xFFFFFFFF - BT_UP);
+			if (players[0].buttons & BT_MOVEDOWN) players[1].cmd.buttons |= BT_DOWN;
+			else players[1].cmd.buttons &= (0xFFFFFFFF - BT_DOWN);
+			if (players[0].buttons & BT_SPEED) players[1].cmd.buttons |= BT_MOVELEFT;
+			else players[1].cmd.buttons &= (0xFFFFFFFF - BT_MOVELEFT);
+			if (players[0].buttons & BT_STRAFE) players[1].cmd.buttons |= BT_MOVERIGHT;
+			else players[1].cmd.buttons &= (0xFFFFFFFF - BT_MOVERIGHT);
+		}
 	
         // Add to input queue
         for (int i = BUF_LEN-1; i > 0; i--) {
