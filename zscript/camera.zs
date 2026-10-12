@@ -29,13 +29,6 @@ class Ancestor : PlayerPawn {
     override void PlayerThink() {
         if (allFighters[0] && allFighters[1]) {
 		
-			// Note for future: Implement rollback-safe movement and stuff
-			// For when CF_PREDICTING is TRUE
-			if (!(player.cheats & CF_PREDICTING)) {	
-				allFighters[0].bTick();
-				allFighters[1].bTick();
-			}
-		
             float avgX = (allFighters[0].Pos.X + allFighters[1].Pos.X) / 2;
             float avgZ = (allFighters[0].Pos.Z + allFighters[1].Pos.Z) / 2;
 			
@@ -58,5 +51,17 @@ class AncestorReminderer : StaticEventHandler {
 		((Ancestor)(players[consoleplayer].mo)).Setup();
 		((Ancestor)(players[consoleplayer].mo)).allFighters[0].PostBeginPlay();
 		((Ancestor)(players[consoleplayer].mo)).allFighters[1].PostBeginPlay();
+	}
+
+	override void WorldTick() {
+		Ancestor anchor = Ancestor(players[consoleplayer].mo);
+		if (!anchor || !anchor.allFighters[0] || !anchor.allFighters[1]) return;
+
+		// Advance the shared fight simulation once per world tick, rather than
+		// from a player pawn's PlayerThink/prediction path.
+		if (!(players[consoleplayer].cheats & CF_PREDICTING)) {
+			anchor.allFighters[0].bTick();
+			anchor.allFighters[1].bTick();
+		}
 	}
 }

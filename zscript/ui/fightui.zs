@@ -117,11 +117,11 @@ class BlankBar : BaseStatusBar {
 		}
 		
 		if (rematchScreen) {
-			if (((Ancestor)(players[0].mo)).allFighters[0].inputQueue[0] & BT_ATTACK) {
+			if (((Ancestor)(players[consoleplayer].mo)).allFighters[0].inputQueue[0] & BT_ATTACK) {
 				p1rematch = true;
 			}
 			
-			if (((Ancestor)(players[0].mo)).allFighters[1].inputQueue[0] & BT_ATTACK) {
+			if (((Ancestor)(players[consoleplayer].mo)).allFighters[1].inputQueue[0] & BT_ATTACK) {
 				p2rematch = true;
 			}
 		}
@@ -172,13 +172,13 @@ class BlankBar : BaseStatusBar {
 	override void Tick() {
 		Super.Tick();
 		
-		BaseFighter p1 = ((Ancestor)(players[0].mo)).allFighters[0];
-		BaseFighter p2 = ((Ancestor)(players[0].mo)).allFighters[1];
+		BaseFighter p1 = ((Ancestor)(players[consoleplayer].mo)).allFighters[0];
+		BaseFighter p2 = ((Ancestor)(players[consoleplayer].mo)).allFighters[1];
 		
 		if (!p1 || !p2) return;
 		
-		int p1Health = ((Ancestor)(players[0].mo)).allFighters[0].Health;
-		int enemyhealth = ((Ancestor)(players[0].mo)).allFighters[1].Health;
+		int p1Health = ((Ancestor)(players[consoleplayer].mo)).allFighters[0].Health;
+		int enemyhealth = ((Ancestor)(players[consoleplayer].mo)).allFighters[1].Health;
 		
 		UpdateChain(p1,false);
 		UpdateChain(p2,true);
@@ -188,13 +188,13 @@ class BlankBar : BaseStatusBar {
 	override void Draw(int state, double TicFrac) {
 		Super.Draw(state, TicFrac);
 		
-		BaseFighter p1 = ((Ancestor)(players[0].mo)).allFighters[0];
-		BaseFighter p2 = ((Ancestor)(players[0].mo)).allFighters[1];
+		BaseFighter p1 = ((Ancestor)(players[consoleplayer].mo)).allFighters[0];
+		BaseFighter p2 = ((Ancestor)(players[consoleplayer].mo)).allFighters[1];
 		
 		if (!p1 || !p2) return;
 		
-		int p1Health = ((Ancestor)(players[0].mo)).allFighters[0].Health;
-		int enemyhealth = ((Ancestor)(players[0].mo)).allFighters[1].Health;
+		int p1Health = ((Ancestor)(players[consoleplayer].mo)).allFighters[0].Health;
+		int enemyhealth = ((Ancestor)(players[consoleplayer].mo)).allFighters[1].Health;
 		
 		int comboLength = 0;
 		if (p1.combo != null)

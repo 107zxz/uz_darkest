@@ -27,7 +27,8 @@ extend class BaseFighter {
 		}
 		
 		if (pIdx == consoleplayer && playeringame[1]) {
-			Spawn('ThisIsYou',Pos + (0, 0, 55));
+			// Disabled: local-only actor creation here can make peers' actor sets differ.
+			// Spawn('ThisIsYou',Pos + (0, 0, 55));
 		}
 	}
 
