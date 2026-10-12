@@ -36,7 +36,16 @@ class Ancestor : PlayerPawn {
 			avgX = Min(avgX, 80);
 			avgX = Max(avgX, -80);
         
-            SetOrigin((avgX, Pos.Y, Pos.Z), false);
+            // Every peer must move the same set of camera pawns. Updating only
+            // this console player's pawn makes the replicated actor state differ.
+            for (int i = 0; i < MAXPLAYERS; i++) {
+                if (!playeringame[i] || !players[i].mo) continue;
+                Ancestor cameraPawn = Ancestor(players[i].mo);
+                if (cameraPawn) {
+                    cameraPawn.SetOrigin((avgX, cameraPawn.Pos.Y, cameraPawn.Pos.Z), false);
+                }
+            }
+
             Player.ViewZ = avgZ/3.0 + 48.0;
             
             playerDistance = Abs(allFighters[0].Pos.X - allFighters[1].Pos.X);
