@@ -53,15 +53,4 @@ class AncestorReminderer : StaticEventHandler {
 		((Ancestor)(players[consoleplayer].mo)).allFighters[1].PostBeginPlay();
 	}
 
-	override void WorldTick() {
-		Ancestor anchor = Ancestor(players[consoleplayer].mo);
-		if (!anchor || !anchor.allFighters[0] || !anchor.allFighters[1]) return;
-
-		// Advance the shared fight simulation once per world tick, rather than
-		// from a player pawn's PlayerThink/prediction path.
-		if (!(players[consoleplayer].cheats & CF_PREDICTING)) {
-			anchor.allFighters[0].bTick();
-			anchor.allFighters[1].bTick();
-		}
-	}
 }
