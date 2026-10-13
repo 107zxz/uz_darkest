@@ -87,8 +87,8 @@ extend class BaseFighter {
 		if (blocked) {
 // 			Console.Printf("Flags: %d", flags);
 		
-			if (!(flags & MOVE_NOSCREENFREEZE))
-				freezetics = dmg/2;
+			// if (!(flags & MOVE_NOSCREENFREEZE))
+			freezetics = dmg/2;
 			Vel = (knockback.X * -(1-Angle / 90),0,0);
 			inflictor.Vel += (knockback.X * (1-Angle / 90),0,0);
 			
@@ -181,7 +181,8 @@ extend class BaseFighter {
 			((BaseFighter)(t.linetarget)).IAmHit(self, dmg, knockback, blocked, moveName, flags);
 			
 			
-			freezetics = dmg;
+                        if (!(flags & MOVE_NOSCREENFREEZE))
+        			freezetics = dmg;
 			Vel += (selfKnockback.X * (1-Angle / 90),0,selfKnockback.Y);
 			
 			if (!(flags & MOVE_NOCANCEL))

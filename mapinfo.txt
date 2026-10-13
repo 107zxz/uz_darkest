@@ -1,12 +1,11 @@
 GameInfo {
-	PlayerClasses = "Ancestor"
-	StatusBarClass = "BlankBar"
-	AddEventHandlers = "AncestorReminderer"
+    PlayerClasses = "Ancestor"
+    StatusBarClass = "BlankBar"
+    AddEventHandlers = "AncestorReminderer"
 	
-	titlepage = "TITLEPIC"
+    titlepage = "TITLEPIC"
 	
-	
-	menufontcolor_title = "RED"
+    menufontcolor_title = "RED"
     menufontcolor_label = "RED"
     menufontcolor_value = "GRAY"
     menufontcolor_action = "GRAY"
@@ -39,13 +38,19 @@ Episode MAP01 {
 }
 
 Skill Default {
-	SpawnFilter = 1
+    SpawnFilter = 1
 }
 
 DefaultMap {
-	PixelRatio = 1.0
-	Sky1 = "textures/SKY1.ase"
+    PixelRatio = 1.0
+    Sky1 = "textures/SKY1.ase"
 }
 
-Map MAP01 "pee" {}
+Map MAP01 "pee" {
+    fogdensity = 128
+    fade = "9999BB"
+    skyfog = 190
+    thickfogdistance = 512
+    thickfogmultiplier = 1
+}
 Map MAP02 "poo" {}

@@ -8,9 +8,8 @@ extend class BaseFighter {
 			pIdx = 1;
 			
 			
-			// Colouring time
-//			TODO: Fix paletting for aesprite files before I can use translations
-// 			A_SetTranslation("BluueAbbey");
+			// Player 2 uses the blue translation.
+			A_SetTranslation("BluueAbbey");
 		}
 		
 		

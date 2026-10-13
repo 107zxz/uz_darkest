@@ -17,5 +17,6 @@ Texture "M_QUITG", 1, 1 {}
 Texture "M_EPISOD", 1, 1 {}
 Texture "M_NEWG", 1, 1 {}
 Texture "M_SKILL", 1, 1 {}
+Flat "F_SKY1", 1, 1 {}
 
 // End of texture definitions

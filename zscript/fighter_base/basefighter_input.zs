@@ -24,13 +24,21 @@ extend class BaseFighter {
     
     const BUF_LEN = 70;
     const BUF_LEN_ACTIONABLE = 16;
+    const HOST_INPUT_DELAY_MAX = 12;
     int inputQueue[BUF_LEN];
+    int hostInputHistory[HOST_INPUT_DELAY_MAX + 1];
+    int hostInputDelayTics;
+    bool hasHostInputDelay;
+    int currentInput;
+    int inputSampleTic;
+    bool hasInputSample;
 
 	void InputPostBeginPlay() {
 	
 	}
 	
 	void InputTick() {
+		GetCurrentInput();
 		bt_left = BT_MOVELEFT;
 		bt_right = BT_MOVERIGHT;
 		if (bXFLIP) {
@@ -42,7 +50,48 @@ extend class BaseFighter {
 	}
 	
 	bool ButtonPressed(int btn) {
-		return players[pIdx].buttons & btn;
+		return GetCurrentInput() & btn;
+	}
+
+	int GetCurrentInput() {
+		// Other fighter logic can query this fighter before its Tick runs.
+		// Sample at most once per level tic so those reads see the same input,
+		// and do not advance the delay buffer twice.
+		if (!hasInputSample || inputSampleTic != Level.Time) {
+			inputSampleTic = Level.Time;
+			hasInputSample = true;
+			currentInput = GetDelayedInput();
+		}
+		return currentInput;
+	}
+
+	int GetDelayedInput() {
+		int rawInput = players[pIdx].buttons;
+
+		// In this game the host is player 0. Buffer that player's commands on
+		// every peer so the host does not act immediately while the client waits
+		// for networked commands. The buffer is deterministic and tic-based.
+		if (!playeringame[1] || pIdx != 0) return rawInput;
+
+		if (!hasHostInputDelay) {
+			// GetAverageLatency is the engine's measured round-trip latency in ms.
+			// Half of that estimates one-way command transit time; round up to a
+			// whole simulation tic so the host waits at least that long.
+			int latencyMs = players[1].GetAverageLatency();
+			hostInputDelayTics = (latencyMs * TICRATE + 1999) / 2000;
+			hostInputDelayTics += CVar.FindCVar("sv_hostinputdelay").GetInt();
+			if (hostInputDelayTics < 0) hostInputDelayTics = 0;
+			if (hostInputDelayTics > HOST_INPUT_DELAY_MAX) hostInputDelayTics = HOST_INPUT_DELAY_MAX;
+			hasHostInputDelay = true;
+		}
+
+		if (hostInputDelayTics == 0) return rawInput;
+
+		for (int i = HOST_INPUT_DELAY_MAX; i > 0; i--) {
+			hostInputHistory[i] = hostInputHistory[i - 1];
+		}
+		hostInputHistory[0] = rawInput;
+		return hostInputHistory[hostInputDelayTics];
 	}
 	
 	void HandleInput() {
@@ -70,7 +119,7 @@ extend class BaseFighter {
         for (int i = BUF_LEN-1; i > 0; i--) {
             inputQueue[i] = inputQueue[i-1];
         }
-        inputQueue[0] = players[pIdx].buttons;
+        inputQueue[0] = GetCurrentInput();
         
 //         for (int i=0; i<BUF_LEN_ACTIONABLE-1; i++) {
 //             Console.Printf("%d ", inputQueue[i]);

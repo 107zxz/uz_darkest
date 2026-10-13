@@ -15,10 +15,8 @@ class BlankBar : BaseStatusBar {
 
 	override void Init() {
 		Super.Init();
-// 		SetSize(0,640,480);
 		
 		trainingFont = HUDFont.Create(confont);
-// 		rematchScreen = true;
 	}
 	
 	void UpdateChain(BaseFighter p, bool rightSide) {
@@ -73,7 +71,6 @@ class BlankBar : BaseStatusBar {
 			if (comboChain < 3) {
 				if (!rightSide) DrawImage(chainTex,(-32,-72), chainFlags,0.4);
 				else DrawImage(chainTex,((-32)*-1,-72), chainFlags,0.4);
-// 				DrawImage(chainTex,(-32,0), chainFlags,0.8);
 			}
 		} else {
 		
@@ -241,7 +238,7 @@ class BlankBar : BaseStatusBar {
 		DrawScreenFX(p1.Health, p2.Health);
 		
 		// VERSION
-		DrawString(trainingFont, "'SUNLESS STRIKE' ALPHA PLAYTEST 7.5",(5,5));
+		DrawString(trainingFont, "'SUNLESS STRIKE' ALPHA PLAYTEST 8",(5,5));
 	}
 	
 	String buttonString(int buttons) {
