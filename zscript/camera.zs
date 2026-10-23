@@ -69,9 +69,6 @@ class AncestorReminderer : StaticEventHandler {
 	int rollbackInputTic[ROLLBACK_INPUT_HISTORY];
 	int rollbackUsedInput0[ROLLBACK_INPUT_HISTORY];
 	int rollbackUsedInput1[ROLLBACK_INPUT_HISTORY];
-	int rollbackActualInput0[ROLLBACK_INPUT_HISTORY];
-	int rollbackActualInput1[ROLLBACK_INPUT_HISTORY];
-	int rollbackActualMask[ROLLBACK_INPUT_HISTORY];
 	bool rollbackFrameValid[ROLLBACK_INPUT_HISTORY];
 	int newestRollbackLocalTic;
 	int latestRollbackCorrectionTic;
@@ -79,6 +76,7 @@ class AncestorReminderer : StaticEventHandler {
 	int lastKnownInput1;
 	bool rollbackInputStarted;
 	bool rollbackSimulationActive;
+	bool rollbackPredictionDisabled;
 	BaseFighter rollbackFighter0;
 	BaseFighter rollbackFighter1;
 	FightRollbackFrame rollbackFrames[ROLLBACK_FRAME_HISTORY];
@@ -92,6 +90,7 @@ class AncestorReminderer : StaticEventHandler {
 	override void WorldLoaded (WorldEvent e) {
 		ResetRollbackInputs();
 		rollbackSimulationActive = false;
+		rollbackPredictionDisabled = false;
 		rollbackFighter0 = null;
 		rollbackFighter1 = null;
 		rollbackSimStarted = false;
@@ -131,8 +130,7 @@ class AncestorReminderer : StaticEventHandler {
 			int commandTic = tic / rollbackTicDup;
 			int input0 = GetRollbackInput(0, commandTic);
 			int input1 = GetRollbackInput(1, commandTic);
-			if (input0 < 0) input0 = players[0].buttons;
-			if (input1 < 0) input1 = players[1].buttons;
+			if (input0 < 0 || input1 < 0) break;
 			SimulateRollbackTic(tic, input0, input1);
 			rollbackSimTic = tic;
 		}
@@ -170,7 +168,6 @@ class AncestorReminderer : StaticEventHandler {
 		for (int i = 0; i < ROLLBACK_INPUT_HISTORY; i++) {
 			rollbackFrameValid[i] = false;
 			rollbackInputTic[i] = -1;
-			rollbackActualMask[i] = 0;
 		}
 	}
 
@@ -200,20 +197,14 @@ class AncestorReminderer : StaticEventHandler {
 			int slot = tic % ROLLBACK_INPUT_HISTORY;
 			rollbackInputTic[slot] = tic;
 			rollbackFrameValid[slot] = true;
-			rollbackActualMask[slot] = 0;
-
 			int input0 = lastKnownInput0;
 			int input1 = lastKnownInput1;
 			if (players[0].HasCommandAtTic(tic)) {
 				input0 = players[0].GetCommandButtonsAtTic(tic);
-				rollbackActualInput0[slot] = input0;
-				rollbackActualMask[slot] |= 1;
 				lastKnownInput0 = input0;
 			}
 			if (players[1].HasCommandAtTic(tic)) {
 				input1 = players[1].GetCommandButtonsAtTic(tic);
-				rollbackActualInput1[slot] = input1;
-				rollbackActualMask[slot] |= 2;
 				lastKnownInput1 = input1;
 			}
 
@@ -229,19 +220,15 @@ class AncestorReminderer : StaticEventHandler {
 			int slot = tic % ROLLBACK_INPUT_HISTORY;
 			if (!rollbackFrameValid[slot] || rollbackInputTic[slot] != tic) continue;
 
-			if (!(rollbackActualMask[slot] & 1) && players[0].HasCommandAtTic(tic)) {
+			if (players[0].HasCommandAtTic(tic)) {
 				int actual = players[0].GetCommandButtonsAtTic(tic);
-				rollbackActualInput0[slot] = actual;
-				rollbackActualMask[slot] |= 1;
 				lastKnownInput0 = actual;
-				if (actual != rollbackUsedInput0[slot] && HasRollbackFrame(tic)) MarkRollbackCorrection(tic * rollbackTicDup);
+				if (actual != rollbackUsedInput0[slot]) MarkRollbackCorrection(tic * rollbackTicDup);
 			}
-			if (!(rollbackActualMask[slot] & 2) && players[1].HasCommandAtTic(tic)) {
+			if (players[1].HasCommandAtTic(tic)) {
 				int actual = players[1].GetCommandButtonsAtTic(tic);
-				rollbackActualInput1[slot] = actual;
-				rollbackActualMask[slot] |= 2;
 				lastKnownInput1 = actual;
-				if (actual != rollbackUsedInput1[slot] && HasRollbackFrame(tic)) MarkRollbackCorrection(tic * rollbackTicDup);
+				if (actual != rollbackUsedInput1[slot]) MarkRollbackCorrection(tic * rollbackTicDup);
 			}
 		}
 
@@ -264,11 +251,14 @@ class AncestorReminderer : StaticEventHandler {
 			// Confirmed commands are advanced by WorldTick with the rest of the
 			// level. Predict only the local player's available command when a peer
 			// command is missing and the fighter/projectile state is rewindable.
-			if (rollbackActualMask[slot] == 3 ||
-				!(rollbackActualMask[slot] & (1 << consoleplayer)) || !CanSpeculateRollbackTic()) break;
+			bool hasInput0 = players[0].HasCommandAtTic(commandTic);
+			bool hasInput1 = players[1].HasCommandAtTic(commandTic);
+			if ((hasInput0 && hasInput1) || !players[consoleplayer].HasCommandAtTic(commandTic)) break;
 			int input0 = GetRollbackInput(0, commandTic);
 			int input1 = GetRollbackInput(1, commandTic);
-			if (input0 < 0 || input1 < 0) break;
+			if (rollbackPredictionDisabled || HasActiveRollbackProjectiles() || input0 < 0 || input1 < 0 ||
+				!rollbackFighter0.CanSpeculateRollbackTic(input0) ||
+				!rollbackFighter1.CanSpeculateRollbackTic(input1)) break;
 			SimulateRollbackTic(tic, input0, input1);
 			rollbackSimTic = tic;
 		}
@@ -314,11 +304,6 @@ class AncestorReminderer : StaticEventHandler {
 		}
 	}
 
-	bool CanSpeculateRollbackTic() {
-		if (!rollbackFighter0 || !rollbackFighter1 || HasActiveRollbackProjectiles()) return false;
-		return rollbackFighter0.CanSpeculateRollbackTic() && rollbackFighter1.CanSpeculateRollbackTic();
-	}
-
 	bool HasActiveRollbackProjectiles() {
 		ThinkerIterator garlicActorFinder = ThinkerIterator.Create("SuperGarlic");
 		if (garlicActorFinder.Next()) return true;
@@ -326,15 +311,31 @@ class AncestorReminderer : StaticEventHandler {
 	}
 
 	void ReplayFromTic(int firstWorldTic) {
+		int replayThrough = rollbackSimTic;
 		int firstSlot = firstWorldTic % ROLLBACK_FRAME_HISTORY;
 		if (!rollbackFrames[firstSlot] || !rollbackFrames[firstSlot].valid || rollbackFrames[firstSlot].tic != firstWorldTic) {
-			// The snapshot fell out of the rewind window. Stop prediction rather
-			// than applying a correction to an unrelated frame.
-			rollbackSimTic = players[consoleplayer].GetWorldTic() - 1;
-			return;
+			// Replay from the nearest retained snapshot before the mismatch. A
+			// later confirmed snapshot may already contain the bad prediction.
+			int earliestWorldTic = max(0, newestRollbackLocalTic - ROLLBACK_INPUT_HISTORY + 1) * rollbackTicDup;
+			int candidateTic = firstWorldTic - 1;
+			bool foundSnapshot = false;
+			while (candidateTic >= earliestWorldTic) {
+				int candidateSlot = candidateTic % ROLLBACK_FRAME_HISTORY;
+				if (rollbackFrames[candidateSlot] && rollbackFrames[candidateSlot].valid &&
+					rollbackFrames[candidateSlot].tic == candidateTic) {
+					firstWorldTic = candidateTic;
+					firstSlot = candidateSlot;
+					foundSnapshot = true;
+					break;
+				}
+				candidateTic--;
+			}
+			if (!foundSnapshot) {
+				rollbackPredictionDisabled = true;
+				Console.Printf("Rollback recovery failed: no pre-correction snapshot; prediction disabled.\n");
+				return;
+			}
 		}
-
-		int replayThrough = rollbackSimTic;
 		if (CVar.FindCVar("cl_debugrollback").GetInt() > 0) {
 			Console.Printf("Rollback test replay: command %d, %d world tics\n",
 				firstWorldTic / rollbackTicDup, replayThrough - firstWorldTic + 1);
@@ -345,22 +346,16 @@ class AncestorReminderer : StaticEventHandler {
 		rollbackSimTic = firstWorldTic - 1;
 
 		int firstCommandTic = firstWorldTic / rollbackTicDup;
-		int previousInput0 = FindLastActualInput(0, firstCommandTic);
-		int previousInput1 = FindLastActualInput(1, firstCommandTic);
 		for (int commandTic = firstCommandTic; commandTic <= newestRollbackLocalTic; commandTic++) {
 			int inputSlot = commandTic % ROLLBACK_INPUT_HISTORY;
 			if (!rollbackFrameValid[inputSlot] || rollbackInputTic[inputSlot] != commandTic) break;
 
-			int input0 = previousInput0;
-			int input1 = previousInput1;
-			if (rollbackActualMask[inputSlot] & 1) {
-				input0 = rollbackActualInput0[inputSlot];
-				previousInput0 = input0;
-			}
-			if (rollbackActualMask[inputSlot] & 2) {
-				input1 = rollbackActualInput1[inputSlot];
-				previousInput1 = input1;
-			}
+			int input0 = rollbackUsedInput0[inputSlot];
+			int input1 = rollbackUsedInput1[inputSlot];
+			if (players[0].HasCommandAtTic(commandTic))
+				input0 = players[0].GetCommandButtonsAtTic(commandTic);
+			if (players[1].HasCommandAtTic(commandTic))
+				input1 = players[1].GetCommandButtonsAtTic(commandTic);
 			rollbackUsedInput0[inputSlot] = input0;
 			rollbackUsedInput1[inputSlot] = input1;
 
@@ -371,17 +366,24 @@ class AncestorReminderer : StaticEventHandler {
 				rollbackSimTic = frame;
 			}
 		}
-		lastKnownInput0 = FindLastActualInput(0, newestRollbackLocalTic + 1);
-		lastKnownInput1 = FindLastActualInput(1, newestRollbackLocalTic + 1);
+		int newestSlot = newestRollbackLocalTic % ROLLBACK_INPUT_HISTORY;
+		if (rollbackFrameValid[newestSlot] && rollbackInputTic[newestSlot] == newestRollbackLocalTic) {
+			lastKnownInput0 = rollbackUsedInput0[newestSlot];
+			lastKnownInput1 = rollbackUsedInput1[newestSlot];
+		} else {
+			lastKnownInput0 = FindLastActualInput(0, newestRollbackLocalTic + 1);
+			lastKnownInput1 = FindLastActualInput(1, newestRollbackLocalTic + 1);
+		}
 	}
 
 	int FindLastActualInput(int playerNum, int beforeTic) {
 		int oldest = max(0, beforeTic - ROLLBACK_INPUT_HISTORY);
 		for (int tic = beforeTic - 1; tic >= oldest; tic--) {
+			if (players[playerNum].HasCommandAtTic(tic))
+				return players[playerNum].GetCommandButtonsAtTic(tic);
 			int slot = tic % ROLLBACK_INPUT_HISTORY;
-			if (!rollbackFrameValid[slot] || rollbackInputTic[slot] != tic) continue;
-			if (rollbackActualMask[slot] & (1 << playerNum))
-				return playerNum == 0 ? rollbackActualInput0[slot] : rollbackActualInput1[slot];
+			if (rollbackFrameValid[slot] && rollbackInputTic[slot] == tic)
+				return playerNum == 0 ? rollbackUsedInput0[slot] : rollbackUsedInput1[slot];
 		}
 		return 0;
 	}
@@ -422,8 +424,8 @@ class AncestorReminderer : StaticEventHandler {
 		if (playerNum < 0 || playerNum > 1 || tic < 0) return -1;
 		int slot = tic % ROLLBACK_INPUT_HISTORY;
 		if (!rollbackFrameValid[slot] || rollbackInputTic[slot] != tic) return -1;
-		if (rollbackActualMask[slot] & (1 << playerNum))
-			return playerNum == 0 ? rollbackActualInput0[slot] : rollbackActualInput1[slot];
+		if (players[playerNum].HasCommandAtTic(tic))
+			return players[playerNum].GetCommandButtonsAtTic(tic);
 		return playerNum == 0 ? rollbackUsedInput0[slot] : rollbackUsedInput1[slot];
 	}
 

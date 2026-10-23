@@ -4,5 +4,5 @@ server int sv_p2fighter = 0;
 server int sv_trainingblock = 0;
 server int sv_trainingregen = 0;
 
-// Extra tics added to the host's latency-based input delay (can be negative).
+// Deterministic host input delay in simulation tics (clamped to the mod's supported range).
 server int sv_hostinputdelay = 0;

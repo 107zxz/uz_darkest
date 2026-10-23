@@ -140,11 +140,16 @@ class FightRollbackFrame play {
 		input1 = buttons1;
 		state0.Capture(fighter0);
 		state1.Capture(fighter1);
-		garlicSnapshots.Clear();
+		while (garlicSnapshots.Size() > garlic.Size())
+			garlicSnapshots.Delete(garlicSnapshots.Size() - 1);
 		for (int i = 0; i < garlic.Size(); i++) {
-			RollbackGarlicSnapshot snapshot = New('RollbackGarlicSnapshot');
+			RollbackGarlicSnapshot snapshot;
+			if (i < garlicSnapshots.Size()) snapshot = garlicSnapshots[i];
+			else {
+				snapshot = New('RollbackGarlicSnapshot');
+				garlicSnapshots.Push(snapshot);
+			}
 			snapshot.Capture(garlic[i]);
-			garlicSnapshots.Push(snapshot);
 		}
 		valid = true;
 	}
@@ -236,9 +241,18 @@ extend class BaseFighter {
 		fightState.Initialize(Pos.X, Level.Time);
 	}
 
-	bool CanSpeculateRollbackTic() {
+	bool CanSpeculateRollbackTic(int input) {
 		if (!rollbackManaged) return false;
-		return true;
+
+		// Attack buttons can enter legacy move states whose actions are not
+		// replay-safe. Only predict those moves after an explicitly registered
+		// rollback move has already begun.
+		int attackButtons = BT_LIGHT | BT_MEDIUM | BT_HEAVY | BT_SPECIAL;
+		if (input & attackButtons) return false;
+		for (int i = 0; i < BUF_LEN_ACTIONABLE; i++)
+			if (inputQueue[i] & attackButtons) return false;
+		if (IsRollbackNeutralState()) return true;
+		return fightState && fightState.activeMoveValid && IsRollbackMove(fightState.activeMove);
 	}
 
 	bool IsRollbackNeutralState() {

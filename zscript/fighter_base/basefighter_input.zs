@@ -96,12 +96,9 @@ extend class BaseFighter {
 		if (!playeringame[1] || pIdx != 0) return rawInput;
 
 		if (!hasHostInputDelay) {
-			// GetAverageLatency is the engine's measured round-trip latency in ms.
-			// Half of that estimates one-way command transit time; round up to a
-			// whole simulation tic so the host waits at least that long.
-			int latencyMs = players[1].GetAverageLatency();
-			hostInputDelayTics = (latencyMs * TICRATE + 1999) / 2000;
-			hostInputDelayTics += CVar.FindCVar("sv_hostinputdelay").GetInt();
+			// This is synchronized server configuration. Per-peer latency estimates
+			// differ and therefore must not affect deterministic simulation state.
+			hostInputDelayTics = CVar.FindCVar("sv_hostinputdelay").GetInt();
 			if (hostInputDelayTics < 0) hostInputDelayTics = 0;
 			if (hostInputDelayTics > HOST_INPUT_DELAY_MAX) hostInputDelayTics = HOST_INPUT_DELAY_MAX;
 			hasHostInputDelay = true;
