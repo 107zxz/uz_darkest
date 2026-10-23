@@ -4,7 +4,7 @@ class Mishka : BaseFighter {
 	IDLE:
 	MISH A 7 {
 		A_SetSize(12);
-		otherP.combo = null;
+		if (!rollbackManaged) otherP.combo = null;
 	}
 // 	EBBY A 0 {
 // 		if (pIdx == 1)
@@ -45,7 +45,7 @@ class Mishka : BaseFighter {
 	
 	PAIN:
 // 	MAHT A 16;
-	TNT1 A 0 A_Pain;
+	TNT1 A 0 { if (!rollbackManaged) A_Pain(); }
 	TNT1 A 0 A_SetSize(12);
 	EBHT ABBB 4;
 	Goto IDLE;
@@ -203,10 +203,7 @@ class Mishka : BaseFighter {
 	---- A 1;
 	EB26 AAB 3;
 	EB26 C 3 {
-		Actor gar = Spawn('SuperGarlic', Pos + (-10,0,38));
-		gar.target = self;
-		gar.Vel.X = 8 * (1 - Angle / 90);
-		gar.Vel.Z = 5;
+		SpawnGarlicProjectile(8 * (1 - Angle / 90), 5);
 	}
 	EB26 DD 3;
 	Goto IDLE;
@@ -215,10 +212,7 @@ class Mishka : BaseFighter {
 	---- A 1;
 	EB26 AAB 3;
 	EB26 C 3 {
-		Actor gar = Spawn('SuperGarlic', Pos + (-10,0,38));
-		gar.target = self;
-		gar.Vel.X = 6 * (1 - Angle / 90);
-		gar.Vel.Z = 7;
+		SpawnGarlicProjectile(6 * (1 - Angle / 90), 7);
 	}
 	EB26 DD 3;
 	Goto IDLE;
@@ -227,10 +221,7 @@ class Mishka : BaseFighter {
 	---- A 1;
 	EB26 AAB 3;
 	EB26 C 3 {
-		Actor gar = Spawn('SuperGarlic', Pos + (-10,0,38));
-		gar.target = self;
-		gar.Vel.X = 1.5 * (1 - Angle / 90);
-		gar.Vel.Z = 10;
+		SpawnGarlicProjectile(1.5 * (1 - Angle / 90), 10);
 	}
 	EB26 DD 3;
 	Goto IDLE;

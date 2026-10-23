@@ -27,6 +27,36 @@
             "configPath": "",
             "map": "map01",
             "additionalArgs": []
+        },
+        {
+            "type": "uzdoom",
+            "name": "UZDoom: Compile scripts (stdout)",
+            "request": "launch",
+            "gamePath": "/home/amy/repos/UZDoom/build/uzdoom",
+            "cwd": "${workspaceFolder}",
+            "port": 19021,
+            "projects": [
+                "${workspaceFolder}"
+            ],
+            "iwad": "doom2.wad",
+            "configPath": "",
+            "map": "map01",
+            "additionalArgs": ["-norun"]
+        },
+        {
+            "type": "uzdoom",
+            "name": "UZDoom: Rollback test (6 tic delay)",
+            "request": "launch",
+            "gamePath": "/home/amy/repos/UZDoom/build/uzdoom",
+            "cwd": "${workspaceFolder}",
+            "port": 19021,
+            "projects": [
+                "${workspaceFolder}"
+            ],
+            "iwad": "doom2.wad",
+            "configPath": "",
+            "map": "map01",
+            "additionalArgs": ["+cl_debugrollback", "6"]
         }
     ]
 }

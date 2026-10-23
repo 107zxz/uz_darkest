@@ -13,7 +13,7 @@ version 5.0.0
 
 
 #include "zscript/characters/fetch.zs"
-#include "zscript/characters/abbey.zs"
+#include "zscript/characters/abbey.zfgh"
 #include "zscript/characters/maple.zs"
 #include "zscript/characters/mishka.zs"
 #include "zscript/projectiles.zs"

@@ -55,6 +55,13 @@ extend class BaseFighter {
 			return;
 		}
 		inAir = Pos.Z != FloorZ;
+
+		if (rollbackManaged) {
+			int simTic = rollbackInputOverrideActive ? rollbackInputOverrideTic : Level.Time;
+			StepRollbackLocomotion(simTic, GetCurrentInput());
+			RollbackMovesTick();
+			return;
+		}
 	
 		if (InStateSequence(curstate, ResolveState("IDLE"))) HandleIdle();
 		if (InStateSequence(curstate, ResolveState("CROUCH"))) HandleCrouch();
@@ -83,6 +90,40 @@ extend class BaseFighter {
 		}
 	}
 	
+	void RollbackMovesTick() {
+		bool neutralState = IsRollbackNeutralState();
+
+		// Ending the opponent's combo is simulation logic, not an animation-state
+		// action; do it on the same neutral-state transition for every character.
+		if (InStateSequence(curstate, ResolveState("IDLE")) && otherP && otherP.combo)
+			otherP.combo = null;
+
+		if (cancelTics > 0) {
+			cancelTics -= 1;
+			if (!inAir) {
+				if (ButtonDown("8") || CheckSpecialInput("8")) {
+					if (ButtonPressed(BT_MOVELEFT)) Vel.X = -2;
+					if (ButtonPressed(BT_MOVERIGHT)) Vel.X = 2;
+					Vel.Z = 10;
+					SetOrigin((Pos.X, Pos.Y, Pos.Z + 1), false);
+					SetStateLabel("JUMP");
+					AirMoves();
+				} else GroundMoves();
+			} else {
+				AirMoves();
+			}
+			return;
+		}
+
+		if (neutralState) {
+			if (InStateSequence(curstate, ResolveState("RUN")) ||
+				InStateSequence(curstate, ResolveState("BACKDASH")))
+				cancelTics = 0;
+			if (!inAir) GroundMoves();
+			else AirMoves();
+		}
+	}
+
 	void IAmHit(BaseFighter inflictor, int dmg, Vector2 knockback, bool blocked, Name moveName, int flags) {
 		if (blocked) {
 // 			Console.Printf("Flags: %d", flags);
@@ -97,7 +138,8 @@ extend class BaseFighter {
 			else
 				SetStateLabel('BLOCK');
 			
-			A_Quake(dmg/4, dmg/3, 0,20000);
+			if (!rollbackManaged)
+				A_Quake(dmg/4, dmg/3, 0,20000);
 			return;
 		}
 		
@@ -116,7 +158,13 @@ extend class BaseFighter {
 		if (inAir)
 			Vel += (0, 0, 1);
 		
-		DamageMobj(inflictor, inflictor, dmg * inflictor.combo.proration, 'Normal');
+		if (rollbackManaged) {
+			// The fighter's health is match state. Avoid routing rollbackable hits
+			// through engine damage side effects and update it directly instead.
+			Health -= int(dmg * inflictor.combo.proration);
+		} else {
+			DamageMobj(inflictor, inflictor, dmg * inflictor.combo.proration, 'Normal');
+		}
 		if (flags & MOVE_WALLBOUNCE) {
 			SetStateLabel('WALLBOUNCE');
 		} else
@@ -125,7 +173,8 @@ extend class BaseFighter {
 // 		Console.Printf("%f", inflictor.combo.proration);
 		
 		
-		A_Quake(dmg/3, dmg/2, 0,20000);
+		if (!rollbackManaged)
+			A_Quake(dmg/3, dmg/2, 0,20000);
 	}
 	
 	bool HitLine(double length, Vector2 offset, int dmg, Name pufftype, Vector2 knockback, Name moveName, int flags = 0, Vector2 selfKnockback = (0,0)) {
@@ -171,7 +220,24 @@ extend class BaseFighter {
 		
 		if (blocked) pufftype = 'BlockPuff';
 		
-		LineAttack(Angle, length, 0, 0, 'Normal', pufftype, 0, t, offset.y, offset.x);
+		Actor hitEffect = LineAttack(Angle, length, 0, 0, 'Normal', pufftype, 0, t, offset.y, offset.x);
+		BaseFighter hitVictim = BaseFighter(t.linetarget);
+		if (hitVictim) {
+			// Don't rely on the hitscan's engine-owned puff during the predicted
+			// path. Replace it with a game-owned visual actor immediately so the
+			// hit feedback does not depend on engine puff spawning or ticking.
+			vector3 effectPos = hitEffect ? hitEffect.Pos : hitVictim.Pos;
+			if (hitEffect) hitEffect.Destroy();
+			hitEffect = Spawn(pufftype, effectPos);
+		}
+		if (hitEffect) {
+			SlashPuff slash = SlashPuff(hitEffect);
+			if (slash) slash.InitializeHitEffect(self, hitVictim);
+			BlockPuff block = BlockPuff(hitEffect);
+			if (block) block.InitializeHitEffect(self, hitVictim);
+			SmashPuff smash = SmashPuff(hitEffect);
+			if (smash) smash.InitializeHitEffect(self, hitVictim);
+		}
 
 		if (t.linetarget != null) {
 			if (flags & MOVE_NOHITAIR && (BaseFighter)(t.linetarget).inAir) {
@@ -194,6 +260,8 @@ extend class BaseFighter {
 	
 	void CancelIfDifferent(StateLabel newState) {
 		if (!curState.InStateSequence(ResolveState(newState))) {
+			if (rollbackManaged && fightState && IsRollbackMove(newState))
+				fightState.BeginMove(newState);
 			SetStateLabel(newState);
 		}
 	}

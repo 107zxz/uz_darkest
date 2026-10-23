@@ -63,18 +63,13 @@ class Fetch : BaseFighter {
 	}
 	Goto JUMP;
 	
-	S22X:
-	---- A 1;
-	EB22 AABC 4;
-	EB22 C 4 {
-		A_SpawnItem('SuperCross');
-	}
-	Goto IDLE;
-	
 	N5P:
 	---- A 1;
 	FETW BC 1;
-	FETW D 2 HitLine(32,(0,0),HITSTUN_LIGHT,'SmashPuff',(0.4,0),'N5P');
+	FETW D 2 {
+		if (!rollbackManaged)
+			HitLine(32,(0,0),HITSTUN_LIGHT,'SmashPuff',(0.4,0),'N5P');
+	}
 	FETW E 2;
 	FETW FG 1;
 	Goto IDLE;
@@ -126,5 +121,15 @@ class Fetch : BaseFighter {
 	}
 	EB2H FG 3;
 	Goto IDLE;
+	}
+
+	override bool IsRollbackMove(StateLabel move) {
+		return move == 'N5P' || Super.IsRollbackMove(move);
+	}
+
+	override void ExecuteRollbackMove(StateLabel move, int frame) {
+		if (move == 'N5P' && frame == 3)
+			HitLine(32,(0,0),HITSTUN_LIGHT,'SmashPuff',(0.4,0),'N5P');
+		else Super.ExecuteRollbackMove(move, frame);
 	}
 }

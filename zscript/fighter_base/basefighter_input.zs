@@ -32,6 +32,9 @@ extend class BaseFighter {
     int currentInput;
     int inputSampleTic;
     bool hasInputSample;
+	bool rollbackInputOverrideActive;
+	int rollbackInputOverrideTic;
+	int rollbackInputOverride;
 
 	void InputPostBeginPlay() {
 	
@@ -54,6 +57,9 @@ extend class BaseFighter {
 	}
 
 	int GetCurrentInput() {
+		if (rollbackInputOverrideActive)
+			return rollbackInputOverride;
+
 		// Other fighter logic can query this fighter before its Tick runs.
 		// Sample at most once per level tic so those reads see the same input,
 		// and do not advance the delay buffer twice.
@@ -65,8 +71,24 @@ extend class BaseFighter {
 		return currentInput;
 	}
 
+	int GetInputAtCommandTic(int tic) {
+		// UZDoom's rollback input hook exposes commands by network sequence
+		// number, so simulation code can request the exact input for a past tic.
+		// Return -1 if that command has not arrived or aged out of history.
+		if (rollbackHandler) {
+			int bufferedInput = rollbackHandler.GetRollbackInput(pIdx, tic);
+			if (bufferedInput >= 0) return bufferedInput;
+		}
+
+		// Fallback for startup and non-network play.
+		if (!players[pIdx].HasCommandAtTic(tic)) return -1;
+		return int(players[pIdx].GetCommandButtonsAtTic(tic));
+	}
+
 	int GetDelayedInput() {
-		int rawInput = players[pIdx].buttons;
+		int commandTic = players[pIdx].GetCommandTic();
+		int rawInput = GetInputAtCommandTic(commandTic);
+		if (rawInput < 0) rawInput = players[pIdx].buttons;
 
 		// In this game the host is player 0. Buffer that player's commands on
 		// every peer so the host does not act immediately while the client waits
@@ -167,6 +189,7 @@ extend class BaseFighter {
 	bool CheckSpecialInput(String repr) {
 	
         int matching = 0;
+        int reprLength = int(repr.Length());
 		String lastMatchingDir = "";
 
         for (int b = BUF_LEN_ACTIONABLE-2; b >= 0; b--) {
@@ -177,21 +200,21 @@ extend class BaseFighter {
                     !ButtonInInput(repr.Mid(matching,1), inputQueue[b+1])
 // 					inputQueue[b+1] & BT_MOVECANCEL == 0
                 ) || (
-					repr.Length() > 3 && 
+					reprLength > 3 &&
 					!ButtonInInput(repr.Mid(matching,1), inputQueue[b]) &&
                     ButtonInInput(repr.Mid(matching,1), inputQueue[b+1])
 				)
             ) {
 				if (inputQueue[b+1] & BT_MOVECANCEL) break;
 				
-				if (matching < repr.Length()-1) 
+				if (matching < reprLength-1)
 					lastMatchingDir = repr.Mid(matching,1);
 				
 				matching += 1;
 				
 			}
             
-            if (matching >= repr.Length() && (repr.Length() < 4 || ButtonInInput(lastMatchingDir, inputQueue[0]))) {
+            if (matching >= reprLength && (reprLength < 4 || ButtonInInput(lastMatchingDir, inputQueue[0]))) {
 				
 				inputQueue[1] = BT_MOVECANCEL;
 				for (int i = 2;i<BUF_LEN_ACTIONABLE;i++)

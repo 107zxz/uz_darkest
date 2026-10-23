@@ -1,4 +1,15 @@
 class SmashPuff : Actor {
+	int rollbackBornTic;
+
+	void InitializeHitEffect(BaseFighter source, BaseFighter victim) {
+		bXFLIP = source.bXFLIP;
+		int offsetMult = bXFLIP ? -1 : 1;
+		double effectZ = victim ? victim.Pos.Z + victim.Height * 0.5 : Pos.Z - 32;
+		SetOrigin((Pos.X + 8 * offsetMult, Pos.Y, effectZ), false);
+		rollbackBornTic = source.rollbackHandler ? source.rollbackHandler.rollbackCurrentTic : -1;
+		SetStateLabel('Visible');
+	}
+
 	Default {
 		Scale 0.25;
 		+NOGRAVITY;
@@ -9,23 +20,25 @@ class SmashPuff : Actor {
 
 	States {
 	Spawn:
-		TNT1 A 0 NoDelay {
-			bXFLIP = DamageSource.bXFLIP;
-			
-			int offsetMult = 1;
-			if (bXFLIP) offsetMult = -1;
-			
-			SetOrigin((Pos.X+8*offsetMult, Pos.Y, Pos.Z-32),false);
-			
-			// Try
-			bXFLIP = random(0,1);
-		}
+		TNT1 A 0;
+	Visible:
 		SPUF ABCDEFGH 1;
 		Stop;
 	}
 }
 
 class BlockPuff : Actor {
+	int rollbackBornTic;
+
+	void InitializeHitEffect(BaseFighter source, BaseFighter victim) {
+		bXFLIP = source.bXFLIP;
+		int offsetMult = bXFLIP ? -1 : 1;
+		double effectZ = victim ? victim.Pos.Z + victim.Height * 0.5 : Pos.Z - 32;
+		SetOrigin((Pos.X + 8 * offsetMult, Pos.Y, effectZ), false);
+		rollbackBornTic = source.rollbackHandler ? source.rollbackHandler.rollbackCurrentTic : -1;
+		SetStateLabel('Visible');
+	}
+
 	Default {
 		Scale 0.1;
 		+NOGRAVITY;
@@ -36,41 +49,37 @@ class BlockPuff : Actor {
 
 	States {
 	Spawn:
-		TNT1 A 0 NoDelay {
-			bXFLIP = DamageSource.bXFLIP;
-			
-			int offsetMult = 1;
-			if (bXFLIP) offsetMult = -1;
-			
-			SetOrigin((Pos.X+8*offsetMult, Pos.Y, Pos.Z-32),false);
-		}
+		TNT1 A 0;
+	Visible:
 		SPUB ABCDEFGH 1;
 		Stop;
 	}
 }
 
 class SlashPuff : Actor {
+	int rollbackBornTic;
+
+	void InitializeHitEffect(BaseFighter source, BaseFighter victim) {
+		bXFLIP = source.bXFLIP;
+		int offsetMult = bXFLIP ? -1 : 1;
+		double effectZ = victim ? victim.Pos.Z + victim.Height * 0.5 : Pos.Z - 96;
+		SetOrigin((Pos.X + 8 * offsetMult, Pos.Y, effectZ), false);
+		rollbackBornTic = source.rollbackHandler ? source.rollbackHandler.rollbackCurrentTic : -1;
+		SetStateLabel('Visible');
+	}
+
 	Default {
 		Scale 0.37;
 		+NOGRAVITY;
 		+BRIGHT;
 		+NOINTERACTION;
+		+NOROLLBACK;
 		Height 1;
 	}
 
 	States {
 	Spawn:
-		TNT1 A 0 NoDelay {
-			bXFLIP = DamageSource.bXFLIP;
-			
-			int offsetMult = 1;
-			if (bXFLIP) offsetMult = -1;
-			
-			SetOrigin((Pos.X+8*offsetMult, Pos.Y, Pos.Z-96),false);
-			
-			// Try
-			bXFLIP = random(0,1);
-		}
+	Visible:
 		SPUV ABCDEFGH 1;
 		Stop;
 	}

@@ -1,4 +1,8 @@
 class BaseFighter : Actor abstract {
+	AncestorReminderer rollbackHandler;
+	FightState fightState;
+	bool rollbackManaged;
+
 	Default {
 	Radius 12;
 	Height 53;
@@ -29,13 +33,40 @@ class BaseFighter : Actor abstract {
 	}
 	
 	void bTick() {
+		// Networked matches are advanced by AncestorReminderer in a stable
+		// player order. Actor thinker ticks must not advance gameplay a second time.
+		if (rollbackManaged) return;
+
 		Super.Tick();
-		
 		InputTick();
 		MovesTick();
 		ContextTick();
 		PhysicsTick();
-		
+	}
+
+	void EnableRollbackSimulation() {
+		InitializeFightState();
+		rollbackManaged = true;
+	}
+
+	void BeginRollbackTic(int simulationTic, int input) {
+		rollbackInputOverrideActive = true;
+		rollbackInputOverrideTic = simulationTic;
+		rollbackInputOverride = input;
+	}
+
+	void RunRollbackTic() {
+		Super.Tick();
+		AdvanceRollbackMove();
+		InputTick();
+		MovesTick();
+		ContextTick();
+		PhysicsTick();
+	}
+
+	void EndRollbackTic() {
+		rollbackInputOverrideActive = false;
+		hasInputSample = false;
 	}
 }
 
@@ -44,3 +75,4 @@ class BaseFighter : Actor abstract {
 #include "zscript/fighter_base/basefighter_physics.zs"
 #include "zscript/fighter_base/basefighter_moves.zs"
 #include "zscript/fighter_base/basefighter_combo.zs"
+#include "zscript/fighter_base/fight_state.zs"
