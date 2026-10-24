@@ -216,6 +216,16 @@ extend class BaseFighter {
 		return false;
 	}
 
+	// Character classes opt in only states whose actions and side effects are
+	// restored by FightRollbackFrame and replayed deterministically.
+	virtual bool IsRollbackSafeCurrentState() {
+		return IsRollbackNeutralState();
+	}
+
+	bool InRollbackState(StateLabel state) {
+		return InStateSequence(curstate, ResolveState(state));
+	}
+
 	virtual void ExecuteRollbackMove(StateLabel move, int frame) {
 	}
 
@@ -241,18 +251,11 @@ extend class BaseFighter {
 		fightState.Initialize(Pos.X, Level.Time);
 	}
 
-	bool CanSpeculateRollbackTic(int input) {
-		if (!rollbackManaged) return false;
-
-		// Attack buttons can enter legacy move states whose actions are not
-		// replay-safe. Only predict those moves after an explicitly registered
-		// rollback move has already begun.
-		int attackButtons = BT_LIGHT | BT_MEDIUM | BT_HEAVY | BT_SPECIAL;
-		if (input & attackButtons) return false;
-		for (int i = 0; i < BUF_LEN_ACTIONABLE; i++)
-			if (inputQueue[i] & attackButtons) return false;
-		if (IsRollbackNeutralState()) return true;
-		return fightState && fightState.activeMoveValid && IsRollbackMove(fightState.activeMove);
+	bool CanSpeculateRollbackTic() {
+		// The current state must be explicitly audited by the fighter class.
+		// This also permits a buffered attack to begin speculating from a neutral
+		// state, while unsupported states still stop prediction.
+		return rollbackManaged && IsRollbackSafeCurrentState();
 	}
 
 	bool IsRollbackNeutralState() {
@@ -264,9 +267,9 @@ extend class BaseFighter {
 			InStateSequence(curstate, ResolveState('BACKDASH'));
 	}
 
-	// Run the shared neutral locomotion rules from the match simulation rather
-	// than from each fighter's actor Tick. The actor remains the render/collision
-	// proxy; move states still own attacks until those are migrated separately.
+	// Run shared neutral locomotion from the match simulation. Registered move
+	// states continue through the actor state machine; their actor fields and
+	// rollback-aware hit/projectile effects are captured and replayed separately.
 	void StepRollbackLocomotion(int simulationTic, int input) {
 		if (fightState == null)
 			InitializeFightState();

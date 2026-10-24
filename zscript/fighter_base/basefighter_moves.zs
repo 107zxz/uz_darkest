@@ -223,21 +223,16 @@ extend class BaseFighter {
 		Actor hitEffect = LineAttack(Angle, length, 0, 0, 'Normal', pufftype, 0, t, offset.y, offset.x);
 		BaseFighter hitVictim = BaseFighter(t.linetarget);
 		if (hitVictim) {
-			// Don't rely on the hitscan's engine-owned puff during the predicted
-			// path. Replace it with a game-owned visual actor immediately so the
-			// hit feedback does not depend on engine puff spawning or ticking.
+			// Replace the engine-owned hitscan puff with a rollback-owned visual.
+			// Engine puffs may be discarded during prediction/rollback, while this
+			// actor is tagged and explicitly removed/recreated when replaying.
 			vector3 effectPos = hitEffect ? hitEffect.Pos : hitVictim.Pos;
 			if (hitEffect) hitEffect.Destroy();
 			hitEffect = Spawn(pufftype, effectPos);
 		}
-		if (hitEffect) {
-			SlashPuff slash = SlashPuff(hitEffect);
-			if (slash) slash.InitializeHitEffect(self, hitVictim);
-			BlockPuff block = BlockPuff(hitEffect);
-			if (block) block.InitializeHitEffect(self, hitVictim);
-			SmashPuff smash = SmashPuff(hitEffect);
-			if (smash) smash.InitializeHitEffect(self, hitVictim);
-		}
+
+		RollbackHitEffect rollbackEffect = RollbackHitEffect(hitEffect);
+		if (rollbackEffect) rollbackEffect.InitializeHitEffect(self, hitVictim);
 
 		if (t.linetarget != null) {
 			if (flags & MOVE_NOHITAIR && (BaseFighter)(t.linetarget).inAir) {

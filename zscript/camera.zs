@@ -257,8 +257,8 @@ class AncestorReminderer : StaticEventHandler {
 			int input0 = GetRollbackInput(0, commandTic);
 			int input1 = GetRollbackInput(1, commandTic);
 			if (rollbackPredictionDisabled || HasActiveRollbackProjectiles() || input0 < 0 || input1 < 0 ||
-				!rollbackFighter0.CanSpeculateRollbackTic(input0) ||
-				!rollbackFighter1.CanSpeculateRollbackTic(input1)) break;
+				!rollbackFighter0.CanSpeculateRollbackTic() ||
+				!rollbackFighter1.CanSpeculateRollbackTic()) break;
 			SimulateRollbackTic(tic, input0, input1);
 			rollbackSimTic = tic;
 		}

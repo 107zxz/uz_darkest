@@ -124,7 +124,17 @@ class Fetch : BaseFighter {
 	}
 
 	override bool IsRollbackMove(StateLabel move) {
-		return move == 'N5P' || Super.IsRollbackMove(move);
+		return move == 'J5P' || move == 'J5S' || move == 'J5H' ||
+			move == 'N5P' || move == 'N5S' || move == 'N5H' ||
+			move == 'N2P' || move == 'N2S' || move == 'N2H' ||
+			Super.IsRollbackMove(move);
+	}
+
+	override bool IsRollbackSafeCurrentState() {
+		return Super.IsRollbackSafeCurrentState() || InRollbackState('LAND') ||
+			InRollbackState('J5P') || InRollbackState('J5S') || InRollbackState('J5H') ||
+			InRollbackState('N5P') || InRollbackState('N5S') || InRollbackState('N5H') ||
+			InRollbackState('N2P') || InRollbackState('N2S') || InRollbackState('N2H');
 	}
 
 	override void ExecuteRollbackMove(StateLabel move, int frame) {

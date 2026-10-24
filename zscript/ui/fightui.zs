@@ -239,6 +239,13 @@ class BlankBar : BaseStatusBar {
 		
 		// VERSION
 		DrawString(trainingFont, "'SUNLESS STRIKE' ALPHA PLAYTEST 8",(5,5));
+
+		int rollbackSequences = CVar.FindCVar("cl_debugrollback").GetInt();
+		if (rollbackSequences > 0) {
+			int rollbackFrames = rollbackSequences * players[consoleplayer].GetTicDup();
+			int estimatedPing = (rollbackFrames * 2000 + 17) / 35;
+			DrawString(trainingFont, String.Format("ROLLBACK TEST: %d frames (~%d ms RTT)", rollbackFrames, estimatedPing), (5,24),9,Font.CR_GOLD,1,-1,4,(2,2));
+		}
 	}
 	
 	String buttonString(int buttons) {

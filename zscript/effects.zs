@@ -1,14 +1,20 @@
-class SmashPuff : Actor {
+class RollbackHitEffect : Actor abstract {
 	int rollbackBornTic;
 
+	virtual double HitEffectVerticalOffset() { return -32; }
+
 	void InitializeHitEffect(BaseFighter source, BaseFighter victim) {
+		if (source == null) return;
 		bXFLIP = source.bXFLIP;
 		int offsetMult = bXFLIP ? -1 : 1;
-		double effectZ = victim ? victim.Pos.Z + victim.Height * 0.5 : Pos.Z - 32;
+		double effectZ = victim ? victim.Pos.Z + victim.Height * 0.5 : Pos.Z + HitEffectVerticalOffset();
 		SetOrigin((Pos.X + 8 * offsetMult, Pos.Y, effectZ), false);
 		rollbackBornTic = source.rollbackHandler ? source.rollbackHandler.rollbackCurrentTic : -1;
 		SetStateLabel('Visible');
 	}
+}
+
+class SmashPuff : RollbackHitEffect {
 
 	Default {
 		Scale 0.25;
@@ -27,17 +33,7 @@ class SmashPuff : Actor {
 	}
 }
 
-class BlockPuff : Actor {
-	int rollbackBornTic;
-
-	void InitializeHitEffect(BaseFighter source, BaseFighter victim) {
-		bXFLIP = source.bXFLIP;
-		int offsetMult = bXFLIP ? -1 : 1;
-		double effectZ = victim ? victim.Pos.Z + victim.Height * 0.5 : Pos.Z - 32;
-		SetOrigin((Pos.X + 8 * offsetMult, Pos.Y, effectZ), false);
-		rollbackBornTic = source.rollbackHandler ? source.rollbackHandler.rollbackCurrentTic : -1;
-		SetStateLabel('Visible');
-	}
+class BlockPuff : RollbackHitEffect {
 
 	Default {
 		Scale 0.1;
@@ -56,17 +52,8 @@ class BlockPuff : Actor {
 	}
 }
 
-class SlashPuff : Actor {
-	int rollbackBornTic;
-
-	void InitializeHitEffect(BaseFighter source, BaseFighter victim) {
-		bXFLIP = source.bXFLIP;
-		int offsetMult = bXFLIP ? -1 : 1;
-		double effectZ = victim ? victim.Pos.Z + victim.Height * 0.5 : Pos.Z - 96;
-		SetOrigin((Pos.X + 8 * offsetMult, Pos.Y, effectZ), false);
-		rollbackBornTic = source.rollbackHandler ? source.rollbackHandler.rollbackCurrentTic : -1;
-		SetStateLabel('Visible');
-	}
+class SlashPuff : RollbackHitEffect {
+	override double HitEffectVerticalOffset() { return -96; }
 
 	Default {
 		Scale 0.37;
@@ -79,6 +66,7 @@ class SlashPuff : Actor {
 
 	States {
 	Spawn:
+                TNT1 A 0;
 	Visible:
 		SPUV ABCDEFGH 1;
 		Stop;
