@@ -27,15 +27,7 @@ class Ancestor : PlayerPawn {
     }
     
     override void PlayerThink() {
-        // In the offline rollback test there is only one authoritative simulation,
-        // so let the view follow its speculative fighters. In a real network game,
-        // keep the camera on confirmed state to avoid peer-dependent camera actors.
-        if (allFighters[0] && allFighters[0].rollbackHandler &&
-            allFighters[0].rollbackHandler.IsRollbackAhead() &&
-            CVar.FindCVar("cl_debugrollback").GetInt() <= 0) return;
-
         if (allFighters[0] && allFighters[1]) {
-		
             float avgX = (allFighters[0].Pos.X + allFighters[1].Pos.X) / 2;
             float avgZ = (allFighters[0].Pos.Z + allFighters[1].Pos.Z) / 2;
 			
@@ -43,16 +35,9 @@ class Ancestor : PlayerPawn {
 			avgX = Min(avgX, 80);
 			avgX = Max(avgX, -80);
         
-            // Every peer must move the same set of camera pawns. Updating only
-            // this console player's pawn makes the replicated actor state differ.
-            for (int i = 0; i < MAXPLAYERS; i++) {
-                if (!playeringame[i] || !players[i].mo) continue;
-                Ancestor cameraPawn = Ancestor(players[i].mo);
-                if (cameraPawn) {
-                    cameraPawn.SetOrigin((avgX, cameraPawn.Pos.Y, cameraPawn.Pos.Z), false);
-                }
-            }
-
+            // Move only the rendered viewpoint. The PlayerPawn's world position
+            // participates in UZDoom's consistency checksum and must remain fixed.
+            SetViewPos((avgX - Pos.X, 0, 0), VPSF_ABSOLUTEOFFSET);
             Player.ViewZ = avgZ/3.0 + 48.0;
             
             playerDistance = Abs(allFighters[0].Pos.X - allFighters[1].Pos.X);
@@ -80,11 +65,13 @@ class AncestorReminderer : StaticEventHandler {
 	BaseFighter rollbackFighter0;
 	BaseFighter rollbackFighter1;
 	FightRollbackFrame rollbackFrames[ROLLBACK_FRAME_HISTORY];
-	Array<RollbackGarlicProjectile> rollbackGarlic;
+	// Array<RollbackGarlicProjectile> rollbackGarlic;
 	int rollbackSimTic;
 	int rollbackCurrentTic;
 	int latestRollbackConfirmedTic;
 	int rollbackTicDup;
+	int rollbackStartWorldTic;
+	bool rollbackInputSimulated[ROLLBACK_INPUT_HISTORY];
 	bool rollbackSimStarted;
 
 	override void WorldLoaded (WorldEvent e) {
@@ -98,8 +85,10 @@ class AncestorReminderer : StaticEventHandler {
 		rollbackCurrentTic = -1;
 		latestRollbackConfirmedTic = -1;
 		rollbackTicDup = 1;
+		rollbackStartWorldTic = -1;
+		for (int i = 0; i < ROLLBACK_INPUT_HISTORY; i++) rollbackInputSimulated[i] = false;
 		for (int i = 0; i < ROLLBACK_FRAME_HISTORY; i++) rollbackFrames[i] = null;
-		ClearRollbackGarlic();
+		// ClearRollbackGarlic();
 		((Ancestor)(players[consoleplayer].mo)).Setup();
 		((Ancestor)(players[consoleplayer].mo)).allFighters[0].PostBeginPlay();
 		((Ancestor)(players[consoleplayer].mo)).allFighters[1].PostBeginPlay();
@@ -142,11 +131,12 @@ class AncestorReminderer : StaticEventHandler {
 		int inputSlot = commandTic % ROLLBACK_INPUT_HISTORY;
 		if (rollbackFrames[frameSlot] == null)
 			rollbackFrames[frameSlot] = New('FightRollbackFrame');
-		rollbackFrames[frameSlot].Capture(tic, rollbackFighter0, rollbackFighter1, input0, input1, rollbackGarlic);
+		rollbackFrames[frameSlot].Capture(tic, rollbackFighter0, rollbackFighter1, input0, input1 /*, rollbackGarlic */);
 
 		if (rollbackFrameValid[inputSlot] && rollbackInputTic[inputSlot] == commandTic) {
 			rollbackUsedInput0[inputSlot] = input0;
 			rollbackUsedInput1[inputSlot] = input1;
+			rollbackInputSimulated[inputSlot] = true;
 		}
 
 		rollbackCurrentTic = tic;
@@ -154,7 +144,7 @@ class AncestorReminderer : StaticEventHandler {
 		rollbackFighter1.BeginRollbackTic(tic, input1);
 		rollbackFighter0.RunRollbackTic();
 		rollbackFighter1.RunRollbackTic();
-		AdvanceRollbackGarlic();
+		// AdvanceRollbackGarlic();
 		rollbackFighter0.EndRollbackTic();
 		rollbackFighter1.EndRollbackTic();
 	}
@@ -168,6 +158,7 @@ class AncestorReminderer : StaticEventHandler {
 		for (int i = 0; i < ROLLBACK_INPUT_HISTORY; i++) {
 			rollbackFrameValid[i] = false;
 			rollbackInputTic[i] = -1;
+			rollbackInputSimulated[i] = false;
 		}
 	}
 
@@ -185,9 +176,12 @@ class AncestorReminderer : StaticEventHandler {
 		}
 
 		if (!rollbackInputStarted) {
-			// On joining/loading a level, start at the oldest locally available
-			// command rather than attempting to simulate a pre-match history.
-			newestRollbackLocalTic = max(-1, latestLocalTic - ROLLBACK_INPUT_HISTORY);
+			// Rollback starts from the current engine state, not from the oldest
+			// command still in the input ring. Treat earlier commands as baseline
+			// history only: they have no matching pre-simulation snapshots.
+			rollbackStartWorldTic = players[consoleplayer].GetWorldTic();
+			int firstSimulatedCommandTic = rollbackStartWorldTic / rollbackTicDup;
+			newestRollbackLocalTic = min(latestLocalTic, firstSimulatedCommandTic - 1);
 			rollbackInputStarted = true;
 		}
 
@@ -197,6 +191,7 @@ class AncestorReminderer : StaticEventHandler {
 			int slot = tic % ROLLBACK_INPUT_HISTORY;
 			rollbackInputTic[slot] = tic;
 			rollbackFrameValid[slot] = true;
+			rollbackInputSimulated[slot] = false;
 			int input0 = lastKnownInput0;
 			int input1 = lastKnownInput1;
 			if (players[0].HasCommandAtTic(tic)) {
@@ -223,12 +218,20 @@ class AncestorReminderer : StaticEventHandler {
 			if (players[0].HasCommandAtTic(tic)) {
 				int actual = players[0].GetCommandButtonsAtTic(tic);
 				lastKnownInput0 = actual;
-				if (actual != rollbackUsedInput0[slot]) MarkRollbackCorrection(tic * rollbackTicDup);
+				int correctionWorldTic = max(tic * rollbackTicDup, rollbackStartWorldTic);
+				if (!rollbackPredictionDisabled && rollbackInputSimulated[slot] &&
+					tic >= rollbackStartWorldTic / rollbackTicDup &&
+					actual != rollbackUsedInput0[slot] && correctionWorldTic <= rollbackSimTic)
+					MarkRollbackCorrection(correctionWorldTic);
 			}
 			if (players[1].HasCommandAtTic(tic)) {
 				int actual = players[1].GetCommandButtonsAtTic(tic);
 				lastKnownInput1 = actual;
-				if (actual != rollbackUsedInput1[slot]) MarkRollbackCorrection(tic * rollbackTicDup);
+				int correctionWorldTic = max(tic * rollbackTicDup, rollbackStartWorldTic);
+				if (!rollbackPredictionDisabled && rollbackInputSimulated[slot] &&
+					tic >= rollbackStartWorldTic / rollbackTicDup &&
+					actual != rollbackUsedInput1[slot] && correctionWorldTic <= rollbackSimTic)
+					MarkRollbackCorrection(correctionWorldTic);
 			}
 		}
 
@@ -256,7 +259,7 @@ class AncestorReminderer : StaticEventHandler {
 			if ((hasInput0 && hasInput1) || !players[consoleplayer].HasCommandAtTic(commandTic)) break;
 			int input0 = GetRollbackInput(0, commandTic);
 			int input1 = GetRollbackInput(1, commandTic);
-			if (rollbackPredictionDisabled || HasActiveRollbackProjectiles() || input0 < 0 || input1 < 0 ||
+			if (rollbackPredictionDisabled /* || HasActiveRollbackProjectiles() */ || input0 < 0 || input1 < 0 ||
 				!rollbackFighter0.CanSpeculateRollbackTic() ||
 				!rollbackFighter1.CanSpeculateRollbackTic()) break;
 			SimulateRollbackTic(tic, input0, input1);
@@ -264,6 +267,7 @@ class AncestorReminderer : StaticEventHandler {
 		}
 	}
 
+	/*
 	RollbackGarlicProjectile SpawnRollbackGarlic(BaseFighter owner, vector3 position, double velocityX, double velocityZ) {
 		RollbackGarlicProjectile projectile = New('RollbackGarlicProjectile');
 		SuperGarlicVisual visual = SuperGarlicVisual(owner.Spawn('SuperGarlicVisual', position));
@@ -309,6 +313,7 @@ class AncestorReminderer : StaticEventHandler {
 		if (garlicActorFinder.Next()) return true;
 		return false;
 	}
+	*/
 
 	void ReplayFromTic(int firstWorldTic) {
 		int replayThrough = rollbackSimTic;
@@ -342,7 +347,7 @@ class AncestorReminderer : StaticEventHandler {
 		}
 		DestroyRollbackHitEffectsFrom(firstWorldTic);
 		rollbackFrames[firstSlot].Restore();
-		RestoreRollbackGarlic(rollbackFrames[firstSlot]);
+		// RestoreRollbackGarlic(rollbackFrames[firstSlot]);
 		rollbackSimTic = firstWorldTic - 1;
 
 		int firstCommandTic = firstWorldTic / rollbackTicDup;

@@ -203,7 +203,7 @@ class Mishka : BaseFighter {
 	---- A 1;
 	EB26 AAB 3;
 	EB26 C 3 {
-		SpawnGarlicProjectile(8 * (1 - Angle / 90), 5);
+		// SpawnGarlicProjectile(8 * (1 - Angle / 90), 5);
 	}
 	EB26 DD 3;
 	Goto IDLE;
@@ -212,7 +212,7 @@ class Mishka : BaseFighter {
 	---- A 1;
 	EB26 AAB 3;
 	EB26 C 3 {
-		SpawnGarlicProjectile(6 * (1 - Angle / 90), 7);
+		// SpawnGarlicProjectile(6 * (1 - Angle / 90), 7);
 	}
 	EB26 DD 3;
 	Goto IDLE;
@@ -221,7 +221,7 @@ class Mishka : BaseFighter {
 	---- A 1;
 	EB26 AAB 3;
 	EB26 C 3 {
-		SpawnGarlicProjectile(1.5 * (1 - Angle / 90), 10);
+		// SpawnGarlicProjectile(1.5 * (1 - Angle / 90), 10);
 	}
 	EB26 DD 3;
 	Goto IDLE;

@@ -1,3 +1,4 @@
+/*
 // Rollback-only display shell. Combat position/velocity live in the match
 // simulation; this actor contributes animation only.
 class SuperGarlicVisual : Actor {
@@ -130,3 +131,4 @@ class RollbackGarlicSnapshot play {
 		visualTics = projectile.visual.tics;
 	}
 }
+*/

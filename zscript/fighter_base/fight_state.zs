@@ -130,9 +130,9 @@ class FightRollbackFrame play {
 	bool valid;
 	FighterRollbackSnapshot state0;
 	FighterRollbackSnapshot state1;
-	Array<RollbackGarlicSnapshot> garlicSnapshots;
+	// Array<RollbackGarlicSnapshot> garlicSnapshots;
 
-	void Capture(int frameTic, BaseFighter fighter0, BaseFighter fighter1, int buttons0, int buttons1, Array<RollbackGarlicProjectile> garlic) {
+	void Capture(int frameTic, BaseFighter fighter0, BaseFighter fighter1, int buttons0, int buttons1 /*, Array<RollbackGarlicProjectile> garlic */) {
 		if (state0 == null) state0 = New('FighterRollbackSnapshot');
 		if (state1 == null) state1 = New('FighterRollbackSnapshot');
 		tic = frameTic;
@@ -140,6 +140,7 @@ class FightRollbackFrame play {
 		input1 = buttons1;
 		state0.Capture(fighter0);
 		state1.Capture(fighter1);
+		/*
 		while (garlicSnapshots.Size() > garlic.Size())
 			garlicSnapshots.Delete(garlicSnapshots.Size() - 1);
 		for (int i = 0; i < garlic.Size(); i++) {
@@ -151,6 +152,7 @@ class FightRollbackFrame play {
 			}
 			snapshot.Capture(garlic[i]);
 		}
+		*/
 		valid = true;
 	}
 
@@ -194,6 +196,7 @@ class FightState {
 }
 
 extend class BaseFighter {
+	/*
 	void SpawnGarlicProjectile(double velocityX, double velocityZ) {
 		vector3 spawnPos = Pos + (-10, 0, 38);
 		if (rollbackManaged && rollbackHandler) {
@@ -206,6 +209,7 @@ extend class BaseFighter {
 		garlic.Vel.X = velocityX;
 		garlic.Vel.Z = velocityZ;
 	}
+	*/
 
 	void RestoreRollbackSize(double radius, double height) {
 		A_SetSize(radius);

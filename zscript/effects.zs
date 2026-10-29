@@ -7,7 +7,7 @@ class RollbackHitEffect : Actor abstract {
 		if (source == null) return;
 		bXFLIP = source.bXFLIP;
 		int offsetMult = bXFLIP ? -1 : 1;
-		double effectZ = victim ? victim.Pos.Z + victim.Height * 0.5 : Pos.Z + HitEffectVerticalOffset();
+		double effectZ = (victim ? victim.Pos.Z + victim.Height * 0.5 : Pos.Z) + HitEffectVerticalOffset();
 		SetOrigin((Pos.X + 8 * offsetMult, Pos.Y, effectZ), false);
 		rollbackBornTic = source.rollbackHandler ? source.rollbackHandler.rollbackCurrentTic : -1;
 		SetStateLabel('Visible');
