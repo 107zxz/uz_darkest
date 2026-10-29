@@ -33,6 +33,10 @@ class FighterRollbackSnapshot play {
 	StateLabel activeMove;
 	int moveTic;
 	bool activeMoveValid;
+	StateLabel pendingCancelMove;
+	State pendingCancelSourceState;
+	int pendingCancelSourceTics;
+	bool pendingCancelMoveValid;
 
 	void Capture(BaseFighter target) {
 		fighter = target;
@@ -75,6 +79,10 @@ class FighterRollbackSnapshot play {
 			moveTic = target.fightState.moveTic;
 			activeMoveValid = target.fightState.activeMoveValid;
 		}
+		pendingCancelMove = target.pendingCancelMove;
+		pendingCancelSourceState = target.pendingCancelSourceState;
+		pendingCancelSourceTics = target.pendingCancelSourceTics;
+		pendingCancelMoveValid = target.pendingCancelMoveValid;
 	}
 
 	void Restore() {
@@ -120,6 +128,10 @@ class FighterRollbackSnapshot play {
 			fighter.fightState.moveTic = moveTic;
 			fighter.fightState.activeMoveValid = activeMoveValid;
 		}
+		fighter.pendingCancelMove = pendingCancelMove;
+		fighter.pendingCancelSourceState = pendingCancelSourceState;
+		fighter.pendingCancelSourceTics = pendingCancelSourceTics;
+		fighter.pendingCancelMoveValid = pendingCancelMoveValid;
 	}
 }
 
@@ -196,6 +208,11 @@ class FightState {
 }
 
 extend class BaseFighter {
+	StateLabel pendingCancelMove;
+	State pendingCancelSourceState;
+	int pendingCancelSourceTics;
+	bool pendingCancelMoveValid;
+
 	/*
 	void SpawnGarlicProjectile(double velocityX, double velocityZ) {
 		vector3 spawnPos = Pos + (-10, 0, 38);
@@ -216,21 +233,46 @@ extend class BaseFighter {
 		Height = height;
 	}
 
-	virtual bool IsRollbackMove(StateLabel move) {
+	// Prediction is enabled by default. Override this to exclude states whose
+	// side effects are not restored by FightRollbackFrame or replayable.
+	virtual bool IsRollbackUnsafeCurrentState() {
 		return false;
 	}
 
-	// Character classes opt in only states whose actions and side effects are
-	// restored by FightRollbackFrame and replayed deterministically.
 	virtual bool IsRollbackSafeCurrentState() {
-		return IsRollbackNeutralState();
+		return !IsRollbackUnsafeCurrentState();
 	}
 
 	bool InRollbackState(StateLabel state) {
 		return InStateSequence(curstate, ResolveState(state));
 	}
 
+	// Optional per-tic hook for moves that need rollback-specific behavior.
+	// The normal actor state action still runs; guard its default side effect
+	// with !rollbackManaged when this hook replaces it.
 	virtual void ExecuteRollbackMove(StateLabel move, int frame) {
+	}
+
+	// A queued move cancel holds the source state for one simulation tic. If
+	// another action changed that state first, discard the request.
+	bool HasPendingMoveCancel() {
+		if (!pendingCancelMoveValid) return false;
+		if (curstate == pendingCancelSourceState && tics == pendingCancelSourceTics)
+			return true;
+
+		pendingCancelMoveValid = false;
+		pendingCancelSourceState = null;
+		return false;
+	}
+
+	void ApplyPendingMoveCancel() {
+		StateLabel nextMove = pendingCancelMove;
+		pendingCancelMoveValid = false;
+		pendingCancelSourceState = null;
+
+		if (rollbackManaged && fightState)
+			fightState.BeginMove(nextMove);
+		SetStateLabel(nextMove);
 	}
 
 	void AdvanceRollbackMove() {
@@ -256,9 +298,7 @@ extend class BaseFighter {
 	}
 
 	bool CanSpeculateRollbackTic() {
-		// The current state must be explicitly audited by the fighter class.
-		// This also permits a buffered attack to begin speculating from a neutral
-		// state, while unsupported states still stop prediction.
+		// States are prediction-safe by default; character overrides can opt out.
 		return rollbackManaged && IsRollbackSafeCurrentState();
 	}
 

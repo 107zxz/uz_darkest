@@ -67,8 +67,7 @@ class Fetch : BaseFighter {
 	---- A 1;
 	FETW BC 1;
 	FETW D 2 {
-		if (!rollbackManaged)
-			HitLine(32,(0,0),HITSTUN_LIGHT,'SmashPuff',(0.4,0),'N5P');
+		HitLine(32,(0,0),HITSTUN_LIGHT,'SmashPuff',(0.4,0),'N5P');
 	}
 	FETW E 2;
 	FETW FG 1;
@@ -121,25 +120,5 @@ class Fetch : BaseFighter {
 	}
 	EB2H FG 3;
 	Goto IDLE;
-	}
-
-	override bool IsRollbackMove(StateLabel move) {
-		return move == 'J5P' || move == 'J5S' || move == 'J5H' ||
-			move == 'N5P' || move == 'N5S' || move == 'N5H' ||
-			move == 'N2P' || move == 'N2S' || move == 'N2H' ||
-			Super.IsRollbackMove(move);
-	}
-
-	override bool IsRollbackSafeCurrentState() {
-		return Super.IsRollbackSafeCurrentState() || InRollbackState('LAND') ||
-			InRollbackState('J5P') || InRollbackState('J5S') || InRollbackState('J5H') ||
-			InRollbackState('N5P') || InRollbackState('N5S') || InRollbackState('N5H') ||
-			InRollbackState('N2P') || InRollbackState('N2S') || InRollbackState('N2H');
-	}
-
-	override void ExecuteRollbackMove(StateLabel move, int frame) {
-		if (move == 'N5P' && frame == 3)
-			HitLine(32,(0,0),HITSTUN_LIGHT,'SmashPuff',(0.4,0),'N5P');
-		else Super.ExecuteRollbackMove(move, frame);
 	}
 }

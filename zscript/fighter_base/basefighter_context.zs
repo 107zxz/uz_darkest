@@ -12,9 +12,6 @@ extend class BaseFighter {
 			A_SetTranslation("BluueAbbey");
 		}
 		
-		
-			
-		
 		// TODO: DEBUG CODE: REMOVE THIS
 		ThinkerIterator pFinder = ThinkerIterator.Create("BaseFighter");
 		BaseFighter mo;

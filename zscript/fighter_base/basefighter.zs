@@ -8,7 +8,7 @@ class BaseFighter : Actor abstract {
 	Height 53;
 	Scale 0.2;
 	PainChance 255;
-// 	PainSound "hit01";
+	PainSound "";
 	Health 150;
 // 	Health 18;
 	
@@ -31,13 +31,35 @@ class BaseFighter : Actor abstract {
 	override void Tick() {
 		bTick();
 	}
-	
+
+	// Hold the source animation frame for a queued move cancel without an
+	// extra blank state in every move sequence.
+	void TickActorWithMoveCancel() {
+		if (!HasPendingMoveCancel()) {
+			Super.Tick();
+			return;
+		}
+
+		State sourceState = curstate;
+		int sourceTics = tics;
+		if (sourceTics > 0) tics = sourceTics + 1;
+		Super.Tick();
+
+		if (curstate == sourceState) {
+			if (sourceTics > 0) tics = sourceTics;
+			if (HasPendingMoveCancel()) ApplyPendingMoveCancel();
+		} else {
+			pendingCancelMoveValid = false;
+			pendingCancelSourceState = null;
+		}
+	}
+
 	void bTick() {
 		// Networked matches are advanced by AncestorReminderer in a stable
 		// player order. Actor thinker ticks must not advance gameplay a second time.
 		if (rollbackManaged) return;
 
-		Super.Tick();
+		TickActorWithMoveCancel();
 		InputTick();
 		MovesTick();
 		ContextTick();
@@ -56,7 +78,7 @@ class BaseFighter : Actor abstract {
 	}
 
 	void RunRollbackTic() {
-		Super.Tick();
+		TickActorWithMoveCancel();
 		AdvanceRollbackMove();
 		InputTick();
 		MovesTick();

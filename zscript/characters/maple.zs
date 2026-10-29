@@ -19,13 +19,4 @@ class Maple : BaseFighter {
 	MABK AB 7;
 	Goto IDLE;
   }
-
-  override bool IsRollbackMove(StateLabel move) {
-    return move == 'MA5H' || Super.IsRollbackMove(move);
-  }
-
-  override bool IsRollbackSafeCurrentState() {
-    return Super.IsRollbackSafeCurrentState() || InRollbackState('MA5H') ||
-      InRollbackState('LAND') || InRollbackState('PAIN') || InRollbackState('BLOCK');
-  }
 }

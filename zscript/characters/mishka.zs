@@ -287,29 +287,4 @@ class Mishka : BaseFighter {
 	EB5H H 2;
 	Goto IDLE;
 	}
-
-	override bool IsRollbackMove(StateLabel move) {
-		return move == 'GRAB' || move == 'THROW' ||
-			move == 'J5P' || move == 'J5S' || move == 'J5H' ||
-			move == 'N5P' || move == 'N5S' || move == 'N5H' ||
-			move == 'N2P' || move == 'N2S' || move == 'N2H' ||
-			move == '236L' || move == '236M' || move == '236H' ||
-			move == '623H' || move == '214L' || move == '214M' || move == '214H' ||
-			Super.IsRollbackMove(move);
-	}
-
-	override bool IsRollbackSafeCurrentState() {
-		return Super.IsRollbackSafeCurrentState() || InRollbackState('LAND') ||
-			InRollbackState('RUNSTOP') || InRollbackState('PAIN') ||
-			InRollbackState('WALLBOUNCE') || InRollbackState('FALL') ||
-			InRollbackState('WIN') || InRollbackState('WINLAUGH') ||
-			InRollbackState('BLOCK') || InRollbackState('CROUCHBLOCK') ||
-			InRollbackState('GRAB') || InRollbackState('THROW') ||
-			InRollbackState('J5P') || InRollbackState('J5S') || InRollbackState('J5H') ||
-			InRollbackState('N5P') || InRollbackState('N5S') || InRollbackState('N5H') ||
-			InRollbackState('N2P') || InRollbackState('N2S') || InRollbackState('N2H') ||
-			InRollbackState('236L') || InRollbackState('236M') || InRollbackState('236H') ||
-			InRollbackState('623H') || InRollbackState('214L') ||
-			InRollbackState('214M') || InRollbackState('214H');
-	}
 }
