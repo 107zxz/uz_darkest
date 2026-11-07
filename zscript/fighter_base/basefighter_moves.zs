@@ -1,3 +1,6 @@
+const FRAME_DELTA = 0.5833333333;
+
+// These are damage values, not tic durations; keep gameplay damage unchanged.
 const HITSTUN_LIGHT = 3;
 const HITSTUN_MEDIUM = 5;
 const HITSTUN_HEAVY = 7;
@@ -74,9 +77,9 @@ extend class BaseFighter {
 			
 			if (!inAir) {
 				if (ButtonDown("8") || CheckSpecialInput("8")) {
-					if (ButtonPressed(BT_MOVELEFT)) Vel.X = -2;
-					if (ButtonPressed(BT_MOVERIGHT)) Vel.X = 2;
-					Vel.Z = 10;
+					if (ButtonPressed(BT_MOVELEFT)) Vel.X = -2 * FRAME_DELTA;
+					if (ButtonPressed(BT_MOVERIGHT)) Vel.X = 2 * FRAME_DELTA;
+					Vel.Z = 10 * FRAME_DELTA;
 					SetOrigin((Pos.X,Pos.Y,Pos.Z+1),false);
 					SetStateLabel("JUMP");
 					AirMoves();
@@ -99,9 +102,9 @@ extend class BaseFighter {
 			cancelTics -= 1;
 			if (!inAir) {
 				if (ButtonDown("8") || CheckSpecialInput("8")) {
-					if (ButtonPressed(BT_MOVELEFT)) Vel.X = -2;
-					if (ButtonPressed(BT_MOVERIGHT)) Vel.X = 2;
-					Vel.Z = 10;
+					if (ButtonPressed(BT_MOVELEFT)) Vel.X = -2 * FRAME_DELTA;
+					if (ButtonPressed(BT_MOVERIGHT)) Vel.X = 2 * FRAME_DELTA;
+					Vel.Z = 10 * FRAME_DELTA;
 					SetOrigin((Pos.X, Pos.Y, Pos.Z + 1), false);
 					SetStateLabel("JUMP");
 					AirMoves();
@@ -126,9 +129,9 @@ extend class BaseFighter {
 // 			Console.Printf("Flags: %d", flags);
 		
 			// if (!(flags & MOVE_NOSCREENFREEZE))
-			freezetics = dmg/2;
-			Vel = (knockback.X * -(1-Angle / 90),0,0);
-			inflictor.Vel += (knockback.X * (1-Angle / 90),0,0);
+			freezetics = ((dmg / 2) * 60 + 17) / 35;
+			Vel = (knockback.X * FRAME_DELTA * -(1-Angle / 90),0,0);
+			inflictor.Vel += (knockback.X * FRAME_DELTA * (1-Angle / 90),0,0);
 			
 			if ((ButtonDown("2") && !inAir) || (CVar.FindCVar("sv_trainingblock").GetBool() && flags & MOVE_BLOCKLOW))
 				SetStateLabel('CROUCHBLOCK');
@@ -136,7 +139,7 @@ extend class BaseFighter {
 				SetStateLabel('BLOCK');
 			
 			if (!rollbackManaged)
-				A_Quake(dmg/4, dmg/3, 0,20000, "");
+				A_Quake(dmg/4, ((dmg / 3) * 60 + 17) / 35, 0,20000, "");
 			return;
 		}
 		
@@ -148,12 +151,12 @@ extend class BaseFighter {
 		inflictor.combo.AddMoveToCombo(moveName, dmg/7.0*0.1+0.9);
 		
 		if (!(flags & MOVE_NOSCREENFREEZE))
-			freezetics = dmg;
-		Vel = (knockback.X * -(1-Angle / 90),0,knockback.Y);
+			freezetics = (dmg * 60 + 17) / 35;
+		Vel = (knockback.X * FRAME_DELTA * -(1-Angle / 90),0,knockback.Y * FRAME_DELTA);
 		
 		// Juggle bonus
 		if (inAir)
-			Vel += (0, 0, 1);
+			Vel += (0, 0, FRAME_DELTA);
 		
 		if (rollbackManaged) {
 			// The fighter's health is match state. Avoid routing rollbackable hits
@@ -171,7 +174,7 @@ extend class BaseFighter {
 		
 		
 		if (!rollbackManaged)
-			A_Quake(dmg/3, dmg/2, 0,20000, "");
+			A_Quake(dmg/3, ((dmg / 2) * 60 + 17) / 35, 0,20000, "");
 	}
 	
 	bool HitLine(double length, Vector2 offset, int dmg, Name pufftype, Vector2 knockback, Name moveName, int flags = 0, Vector2 selfKnockback = (0,0)) {
@@ -239,12 +242,12 @@ extend class BaseFighter {
 			((BaseFighter)(t.linetarget)).IAmHit(self, dmg, knockback, blocked, moveName, flags);
 			
 			
-                        if (!(flags & MOVE_NOSCREENFREEZE))
-        			freezetics = dmg;
-			Vel += (selfKnockback.X * (1-Angle / 90),0,selfKnockback.Y);
+			if (!(flags & MOVE_NOSCREENFREEZE))
+				freezetics = (dmg * 60 + 17) / 35;
+			Vel += (selfKnockback.X * FRAME_DELTA * (1-Angle / 90),0,selfKnockback.Y * FRAME_DELTA);
 			
 			if (!(flags & MOVE_NOCANCEL))
-				cancelTics = dmg+8;
+				cancelTics = ((dmg + 8) * 60 + 17) / 35;
 		}
 		
 		return t.linetarget != null;
@@ -300,9 +303,9 @@ extend class BaseFighter {
 		
 		if ((ButtonPressed(BT_FORWARD)) && (Pos.Z == FloorZ)) {
 		
-			if (ButtonPressed(BT_MOVELEFT)) Vel.X = -2;
-			if (ButtonPressed(BT_MOVERIGHT)) Vel.X = 2;
-			Vel.Z = 10;
+			if (ButtonPressed(BT_MOVELEFT)) Vel.X = -2 * FRAME_DELTA;
+			if (ButtonPressed(BT_MOVERIGHT)) Vel.X = 2 * FRAME_DELTA;
+			Vel.Z = 10 * FRAME_DELTA;
 			SetOrigin((Pos.X,Pos.Y,Pos.Z+1),false);
 			SetStateLabel("JUMP");
 		}
@@ -313,10 +316,10 @@ extend class BaseFighter {
 			SetStateLabel("IDLE");
 		
 		if (ButtonPressed(BT_MOVELEFT)) {
-			SetOrigin((Pos.X - 2, Pos.Y, Pos.Z), true);
+			SetOrigin((Pos.X - 2 * FRAME_DELTA, Pos.Y, Pos.Z), true);
 		}
 		if (ButtonPressed(BT_MOVERIGHT)) {
-			SetOrigin((Pos.X + 2, Pos.Y, Pos.Z), true);
+			SetOrigin((Pos.X + 2 * FRAME_DELTA, Pos.Y, Pos.Z), true);
 		}
 		
 		if (ButtonPressed(BT_BACK)) SetStateLabel("CROUCH");
@@ -324,9 +327,9 @@ extend class BaseFighter {
 		GroundMoves();
 		
 		if ((ButtonPressed(BT_FORWARD)) && Pos.Z == FloorZ) {
-			if (ButtonPressed(BT_MOVELEFT)) Vel.X = -2;
-			if (ButtonPressed(BT_MOVERIGHT)) Vel.X = 2;
-			Vel.Z = 10;
+			if (ButtonPressed(BT_MOVELEFT)) Vel.X = -2 * FRAME_DELTA;
+			if (ButtonPressed(BT_MOVERIGHT)) Vel.X = 2 * FRAME_DELTA;
+			Vel.Z = 10 * FRAME_DELTA;
 			SetOrigin((Pos.X,Pos.Y,Pos.Z+1),false);
 			SetStateLabel("JUMP");
 		}
@@ -335,11 +338,11 @@ extend class BaseFighter {
 	void HandleRun() {
 		cancelTics = 0;
 		if (ButtonPressed(bt_right)) {
-			SetOrigin((Pos.X + 5 * (1-Angle / 90), Pos.Y, Pos.Z), true);
+			SetOrigin((Pos.X + 5 * FRAME_DELTA * (1-Angle / 90), Pos.Y, Pos.Z), true);
 			
 			if (ButtonDown("9")) {
-				Vel.Z = 10;
-				Vel.X = 5 * (1-Angle / 90);
+				Vel.Z = 10 * FRAME_DELTA;
+				Vel.X = 5 * FRAME_DELTA * (1-Angle / 90);
 				SetOrigin((Pos.X,Pos.Y,Pos.Z+1),false);
 				SetStateLabel("JUMP");
 				return;
@@ -354,14 +357,14 @@ extend class BaseFighter {
 	
 	void HandleBackdash() {
 		cancelTics = 0;
-		SetOrigin((Pos.X - 7 * (1-Angle / 90), Pos.Y, Pos.Z), true);
+		SetOrigin((Pos.X - 7 * FRAME_DELTA * (1-Angle / 90), Pos.Y, Pos.Z), true);
 		
-		if (ButtonDown("7")) {
-			Vel.Z = 10;
-			Vel.X = -5 * (1-Angle / 90);
-			SetOrigin((Pos.X,Pos.Y,Pos.Z+1),false);
-			SetStateLabel("JUMP");
-		}
+// 		if (ButtonDown("7")) {
+// 			Vel.Z = 10 * FRAME_DELTA;
+// 			Vel.X = -5 * FRAME_DELTA * (1-Angle / 90);
+// 			SetOrigin((Pos.X,Pos.Y,Pos.Z+1),false);
+// 			SetStateLabel("JUMP");
+// 		}
 	}
 	
 	virtual void HandleCrouch() {

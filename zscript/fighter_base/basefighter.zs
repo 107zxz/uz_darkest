@@ -6,13 +6,15 @@ class BaseFighter : Actor abstract {
 	Default {
 	Radius 12;
 	Height 53;
-	Scale 0.2;
+	Scale 0.13;
 	PainChance 255;
 	PainSound "";
 	Health 150;
 // 	Health 18;
 	
-	Friction 0.8;
+	Friction 0.8780;
+	// Physics values are calibrated for 35-Hz tics; rescale for 60 Hz.
+	Gravity 0.34027778;
 	  
 	+SHOOTABLE;
 	+CASTSPRITESHADOW;

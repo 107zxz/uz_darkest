@@ -28,7 +28,7 @@ class SmashPuff : RollbackHitEffect {
 	Spawn:
 		TNT1 A 0;
 	Visible:
-		SPUF ABCDEFGH 1;
+		SPUF ABCDEFGH 2;
 		Stop;
 	}
 }
@@ -47,7 +47,7 @@ class BlockPuff : RollbackHitEffect {
 	Spawn:
 		TNT1 A 0;
 	Visible:
-		SPUB ABCDEFGH 1;
+		SPUB ABCDEFGH 2;
 		Stop;
 	}
 }
@@ -68,7 +68,7 @@ class SlashPuff : RollbackHitEffect {
 	Spawn:
                 TNT1 A 0;
 	Visible:
-		SPUV ABCDEFGH 1;
+		SPUV ABCDEFGH 2;
 		Stop;
 	}
 }
@@ -85,9 +85,9 @@ class ThisIsYou : Actor {
 	
 	States {
 	Spawn:
-		YOUU A 15;
-		YOUU AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 1 {
-			Vel.Z += 0.15;
+		YOUU A 26;
+		YOUU AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 2 {
+			Vel.Z += 0.15 * 0.34027778;
 		}
 		Stop;
 	}

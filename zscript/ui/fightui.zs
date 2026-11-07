@@ -33,9 +33,9 @@ class BlankBar : BaseStatusBar {
 		} else {
 		
 			if (rightSide) {
-				chainFade2 -= 2.0/35.0;
+				chainFade2 -= 2.0/60.0;
 			} else {
-				chainFade -= 2.0/35.0;
+				chainFade -= 2.0/60.0;
 			}
 		}
 	}
@@ -95,10 +95,10 @@ class BlankBar : BaseStatusBar {
 		if (!ancestor || !ancestor.allFighters[0] || !ancestor.allFighters[1]) return;
 
 		if ((p1hp <= 17 || p2hp <= 17) && !rematchScreen) {
-			screenFadeIn -= 4.0/35;
+			screenFadeIn -= 4.0/60;
 			
 		} else if (screenFadeIn <= 1.0) {
-			screenFadeIn += 2.0/35;
+			screenFadeIn += 2.0/60;
 		} else {
 			screenFadeIn = 1.0*10;
 		}
@@ -243,7 +243,7 @@ class BlankBar : BaseStatusBar {
 		int rollbackSequences = CVar.FindCVar("cl_debugrollback").GetInt();
 		if (rollbackSequences > 0) {
 			int rollbackFrames = rollbackSequences * players[consoleplayer].GetTicDup();
-			int estimatedPing = (rollbackFrames * 2000 + 17) / 35;
+			int estimatedPing = (rollbackFrames * 2000 + 30) / 60;
 			DrawString(trainingFont, String.Format("ROLLBACK TEST: %d frames (~%d ms RTT)", rollbackFrames, estimatedPing), (5,24),9,Font.CR_GOLD,1,-1,4,(2,2));
 		}
 	}

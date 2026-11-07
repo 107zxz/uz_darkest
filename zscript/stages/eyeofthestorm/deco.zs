@@ -72,7 +72,7 @@ class Tentacle : Actor {
 
 	States {
 	SPAWN:
-		CRYS BBBCDDDC 10;
+		CRYS BBBCDDDC 17;
 		Loop;
 	}
 }
@@ -87,7 +87,7 @@ class Tentacle2 : Actor {
 
 	States {
 	SPAWN:
-		CRYS BBBCDDDC 10;
+		CRYS BBBCDDDC 17;
 		Loop;
 	}
 }

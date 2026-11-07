@@ -2,21 +2,21 @@ class Maple : BaseFighter {
   States {
   SPAWN:
   IDLE:
-	MAPL A 1;
+	MAPL A 2;
     Loop;
   LAND:
-	---- A 4;
+	---- A 7;
 	Goto IDLE;
   MA5H:
-    FETC ABCCDDEEFGHIJ 2;
+    FETC ABCCDDEEFGHIJ 3;
     Goto IDLE;
   PAIN:
 // 	MAHT A 16;
-	MABK AB 8;
+	MABK AB 14;
 	Goto IDLE;
 
   BLOCK:
-	MABK AB 7;
+	MABK AB 12;
 	Goto IDLE;
   }
 }

@@ -6,7 +6,7 @@ class GrassDeco : Actor {
 	
   States {
   SPAWN:
-    GRAS AB 8;
+    GRAS AB 14;
     Loop;
   }
 }

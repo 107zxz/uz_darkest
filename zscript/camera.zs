@@ -75,6 +75,9 @@ class AncestorReminderer : StaticEventHandler {
 	bool rollbackSimStarted;
 
 	override void WorldLoaded (WorldEvent e) {
+		// UZDoom's base tick is 35 Hz. A 0.583333 scale advances 60 game tics
+		// per real second while keeping the engine's wall-clock pacing correct.
+		CVar.FindCVar('i_timescale').SetFloat(1.5833333333);
 		ResetRollbackInputs();
 		rollbackSimulationActive = false;
 		rollbackPredictionDisabled = false;

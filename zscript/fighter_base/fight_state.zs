@@ -16,8 +16,8 @@ class FighterRollbackSnapshot play {
 	int cancelTics;
 	bool inAir;
 	Actor lastHitTarget;
-	int inputQueue[70];
-	int hostInputHistory[13];
+	int inputQueue[120];
+	int hostInputHistory[22];
 	int hostInputDelayTics;
 	bool hasHostInputDelay;
 	int currentInput;
@@ -54,8 +54,8 @@ class FighterRollbackSnapshot play {
 		cancelTics = target.cancelTics;
 		inAir = target.inAir;
 		lastHitTarget = target.lastHitTarget;
-		for (int i = 0; i < 70; i++) inputQueue[i] = target.inputQueue[i];
-		for (int i = 0; i < 13; i++) hostInputHistory[i] = target.hostInputHistory[i];
+		for (int i = 0; i < 120; i++) inputQueue[i] = target.inputQueue[i];
+		for (int i = 0; i < 22; i++) hostInputHistory[i] = target.hostInputHistory[i];
 		hostInputDelayTics = target.hostInputDelayTics;
 		hasHostInputDelay = target.hasHostInputDelay;
 		currentInput = target.currentInput;
@@ -100,8 +100,8 @@ class FighterRollbackSnapshot play {
 		fighter.cancelTics = cancelTics;
 		fighter.inAir = inAir;
 		fighter.lastHitTarget = lastHitTarget;
-		for (int i = 0; i < 70; i++) fighter.inputQueue[i] = inputQueue[i];
-		for (int i = 0; i < 13; i++) fighter.hostInputHistory[i] = hostInputHistory[i];
+		for (int i = 0; i < 120; i++) fighter.inputQueue[i] = inputQueue[i];
+		for (int i = 0; i < 22; i++) fighter.hostInputHistory[i] = hostInputHistory[i];
 		fighter.hostInputDelayTics = hostInputDelayTics;
 		fighter.hasHostInputDelay = hasHostInputDelay;
 		fighter.currentInput = currentInput;
@@ -359,8 +359,8 @@ extend class BaseFighter {
 		if (walking) {
 			if (!(input & BT_MOVELEFT) && !(input & BT_MOVERIGHT))
 				SetStateLabel('IDLE');
-			if (input & BT_MOVELEFT) nextX -= 2;
-			if (input & BT_MOVERIGHT) nextX += 2;
+			if (input & BT_MOVELEFT) nextX -= 2 * FRAME_DELTA;
+			if (input & BT_MOVERIGHT) nextX += 2 * FRAME_DELTA;
 			if (input & BT_BACK) SetStateLabel('CROUCH');
 		}
 
@@ -369,10 +369,10 @@ extend class BaseFighter {
 
 		if (running) {
 			if (input & bt_right) {
-				nextX += 5 * (1 - Angle / 90);
+				nextX += 5 * FRAME_DELTA * (1 - Angle / 90);
 				if (ButtonInInput("9", input)) {
-					Vel.Z = 10;
-					Vel.X = 5 * (1 - Angle / 90);
+					Vel.Z = 10 * FRAME_DELTA;
+					Vel.X = 5 * FRAME_DELTA * (1 - Angle / 90);
 					SetOrigin((Pos.X, Pos.Y, Pos.Z + 1), false);
 					SetStateLabel('JUMP');
 				}
@@ -382,19 +382,19 @@ extend class BaseFighter {
 		}
 
 		if (backdashing) {
-			nextX -= 7 * (1 - Angle / 90);
+			nextX -= 7 * FRAME_DELTA * (1 - Angle / 90);
 			if (ButtonInInput("7", input)) {
-				Vel.Z = 10;
-				Vel.X = -5 * (1 - Angle / 90);
+				Vel.Z = 10 * FRAME_DELTA;
+				Vel.X = -5 * FRAME_DELTA * (1 - Angle / 90);
 				SetOrigin((Pos.X, Pos.Y, Pos.Z + 1), false);
 				SetStateLabel('JUMP');
 			}
 		}
 
 		if ((idle || walking) && (input & BT_FORWARD) && Pos.Z == FloorZ) {
-			if (input & BT_MOVELEFT) Vel.X = -2;
-			if (input & BT_MOVERIGHT) Vel.X = 2;
-			Vel.Z = 10;
+			if (input & BT_MOVELEFT) Vel.X = -2 * FRAME_DELTA;
+			if (input & BT_MOVERIGHT) Vel.X = 2 * FRAME_DELTA;
+			Vel.Z = 10 * FRAME_DELTA;
 			SetOrigin((Pos.X, Pos.Y, Pos.Z + 1), false);
 			SetStateLabel('JUMP');
 		}

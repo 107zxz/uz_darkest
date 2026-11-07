@@ -33,11 +33,3 @@ extend class BaseFighter {
 // 		SetInventory("EnemyHP",otherP.Health,true);
 	}
 }
-
-// class EnemyHP : Inventory {
-// 	Default {
-// 		Inventory.Amount 1;
-// 		Inventory.MaxAmount 100;
-		
-// 	}
-// }

@@ -22,9 +22,9 @@ extend class BaseFighter {
     int bt_left;
     int bt_right;
     
-    const BUF_LEN = 70;
-    const BUF_LEN_ACTIONABLE = 16;
-    const HOST_INPUT_DELAY_MAX = 12;
+    const BUF_LEN = 120;
+    const BUF_LEN_ACTIONABLE = 27;
+    const HOST_INPUT_DELAY_MAX = 21;
     int inputQueue[BUF_LEN];
     int hostInputHistory[HOST_INPUT_DELAY_MAX + 1];
     int hostInputDelayTics;
