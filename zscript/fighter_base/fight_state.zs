@@ -370,7 +370,7 @@ extend class BaseFighter {
 		if (running) {
 			if (input & bt_right) {
 				nextX += 5 * FRAME_DELTA * (1 - Angle / 90);
-				if (ButtonInInput("9", input)) {
+				if (ButtonInInput("8", input)) {
 					Vel.Z = 10 * FRAME_DELTA;
 					Vel.X = 5 * FRAME_DELTA * (1 - Angle / 90);
 					SetOrigin((Pos.X, Pos.Y, Pos.Z + 1), false);
@@ -383,7 +383,7 @@ extend class BaseFighter {
 
 		if (backdashing) {
 			nextX -= 7 * FRAME_DELTA * (1 - Angle / 90);
-			if (ButtonInInput("7", input)) {
+			if (ButtonInInput("8", input)) {
 				Vel.Z = 10 * FRAME_DELTA;
 				Vel.X = -5 * FRAME_DELTA * (1 - Angle / 90);
 				SetOrigin((Pos.X, Pos.Y, Pos.Z + 1), false);

@@ -22,7 +22,7 @@ class Ancestor : PlayerPawn {
         
         if (!allFighters[1]) allFighters[1] = allFighters[0];
         
-        Player.FOV = 85;
+        Player.FOV = 95;
 		Player.ViewZ = 48.0;
     }
     
@@ -42,7 +42,7 @@ class Ancestor : PlayerPawn {
             
             playerDistance = Abs(allFighters[0].Pos.X - allFighters[1].Pos.X);
 			
-			Player.FOV = max(ATan(playerDistance/2/-Pos.Y)*1.9,85);
+// 			Player.FOV = max(ATan(playerDistance/2/-Pos.Y)*1.9,95);
         }
     }
 }

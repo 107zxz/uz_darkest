@@ -43,13 +43,13 @@ Skill Default {
 
 DefaultMap {
     PixelRatio = 1.0
-    Sky1 = "textures/SKY1.ase"
+    Sky1 = "SKY1A"
 }
 
 Map MAP01 "pee" {
-    fogdensity = 128
-    fade = "9999BB"
-    skyfog = 190
+    fogdensity = 32
+    fade = "6666BB"
+    skyfog = 0
     thickfogdistance = 512
     thickfogmultiplier = 1
 }

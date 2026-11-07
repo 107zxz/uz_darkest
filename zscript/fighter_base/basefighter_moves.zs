@@ -358,13 +358,6 @@ extend class BaseFighter {
 	void HandleBackdash() {
 		cancelTics = 0;
 		SetOrigin((Pos.X - 7 * FRAME_DELTA * (1-Angle / 90), Pos.Y, Pos.Z), true);
-		
-// 		if (ButtonDown("7")) {
-// 			Vel.Z = 10 * FRAME_DELTA;
-// 			Vel.X = -5 * FRAME_DELTA * (1-Angle / 90);
-// 			SetOrigin((Pos.X,Pos.Y,Pos.Z+1),false);
-// 			SetStateLabel("JUMP");
-// 		}
 	}
 	
 	virtual void HandleCrouch() {
