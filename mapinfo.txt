@@ -44,6 +44,7 @@ Skill Default {
 DefaultMap {
     PixelRatio = 1.0
     Sky1 = "SKY1A"
+	SkyStretch
 }
 
 Map MAP01 "pee" {

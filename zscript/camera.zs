@@ -23,7 +23,7 @@ class Ancestor : PlayerPawn {
         if (!allFighters[1]) allFighters[1] = allFighters[0];
         
         Player.FOV = 95;
-		Player.ViewZ = 48.0;
+		Player.ViewZ = 56.0;
     }
     
     override void PlayerThink() {
@@ -38,7 +38,7 @@ class Ancestor : PlayerPawn {
             // Move only the rendered viewpoint. The PlayerPawn's world position
             // participates in UZDoom's consistency checksum and must remain fixed.
             SetViewPos((avgX - Pos.X, 0, 0), VPSF_ABSOLUTEOFFSET);
-            Player.ViewZ = avgZ/3.0 + 48.0;
+            Player.ViewZ = avgZ/3.0 + 56.0;
             
             playerDistance = Abs(allFighters[0].Pos.X - allFighters[1].Pos.X);
 			

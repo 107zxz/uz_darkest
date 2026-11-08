@@ -173,7 +173,7 @@ class Abbey : BaseFighter {
 	Goto IDLE;
 	
 	N2S:
-	EBCM A 9;
+	EBCM A 6;
 	EBCM B 3 HitLine(64,(0,-16),HITSTUN_MEDIUM,'SlashPuff',(0.4,6),'N2S',MOVE_BLOCKLOW);
 	EBCM C 17;
 	EBCH A 3;
