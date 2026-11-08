@@ -13,7 +13,7 @@ class Abbey : BaseFighter {
 	Loop;
 	
 	WALK:
-	EBWK BA 9;
+	EBWK B 9;
 	Loop;
 	
 	RUN:
