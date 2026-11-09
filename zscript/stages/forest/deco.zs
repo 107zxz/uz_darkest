@@ -29,7 +29,7 @@ class TreelineDeco : Actor {
     Radius 16;
     Scale 1.0;
 	+NOGRAVITY;
-// 	+BRIGHT;
+	+BRIGHT;
 	+WALLSPRITE;
   }
 	
