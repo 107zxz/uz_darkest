@@ -1,12 +1,14 @@
-Material Texture "textures/uibarsfront.ase" {
-	 shader "shaders/hpbarshader.fp"
-}
+// Material Texture "textures/uibarsfront.ase" {
+// 	 shader "shaders/hpbarshader.fp"
+// }
 
-Material Texture "textures/uieclipse.ase" {
+// Material Texture "textures/uieclipse.ase" {
 // 	 shader "shaders/eclipseshader.fp"
-}
+// }
 
-// Material Texture "tilza0" {
-// 	shader "shaders/shinyfloor.fp"
+// Material Texture "textures/tilex0.resprite" {
+// 	texture normal "textures/tilez0.resprite"
+// 	texture specular "textures/tilez0.resprite"
+// 	texture glow "textures/tilez0.resprite"
 // }
 

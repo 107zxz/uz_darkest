@@ -61,32 +61,32 @@ class BlankBar : BaseStatusBar {
 			
 		if (comboLength > 1) {
 			if (comboChain < 1) {
-				if (!rightSide) DrawImage(chainTex,(-96-64,-72), chainFlags,0.4);
-				else DrawImage(chainTex,((-96-64)*-1,-72), chainFlags,0.4);
+				if (!rightSide) DrawImage(chainTex,(-96-64,-72+72), chainFlags,0.4);
+				else DrawImage(chainTex,((-96-64)*-1,-72+72), chainFlags,0.4);
 			}
 			if (comboChain < 2) {
-				if (!rightSide) DrawImage(chainTex,(-96,-72), chainFlags,0.4);
-				else DrawImage(chainTex,((-96)*-1,-72), chainFlags,0.4);
+				if (!rightSide) DrawImage(chainTex,(-96,-72+72), chainFlags,0.4);
+				else DrawImage(chainTex,((-96)*-1,-72+72), chainFlags,0.4);
 			}
 			if (comboChain < 3) {
-				if (!rightSide) DrawImage(chainTex,(-32,-72), chainFlags,0.4);
-				else DrawImage(chainTex,((-32)*-1,-72), chainFlags,0.4);
+				if (!rightSide) DrawImage(chainTex,(-32,-72+72), chainFlags,0.4);
+				else DrawImage(chainTex,((-32)*-1,-72+72), chainFlags,0.4);
 			}
 		} else {
 		
 			if (rightSide) {
-				DrawImage(chainBreakTex,(32,-32), chainFlags,chainFade2);
+				DrawImage(chainBreakTex,(32,-32+72), chainFlags,chainFade2);
 			} else {
-				DrawImage(chainBreakTex,(-32,-32), chainFlags,chainFade);
+				DrawImage(chainBreakTex,(-32,-32+72), chainFlags,chainFade);
 			}
 		} 
 		
 		if (rightSide) {
-			DrawString(trainingFont,String.Format("Chain %d", comboChain+1), (720,64),9,Font.CR_ICE,chainFade2,-1,4,(2,2));
-			DrawString(trainingFont,String.Format("Hits: %d", comboLength), (720-12,86),9,Font.CR_LIGHTBLUE,chainFade2,-1,4,(3,3));
+			DrawString(trainingFont,String.Format("Chain %d", comboChain+1), (720,64+48),9,Font.CR_ICE,chainFade2,-1,4,(2,2));
+			DrawString(trainingFont,String.Format("Hits: %d", comboLength), (720-12,86+48),9,Font.CR_LIGHTBLUE,chainFade2,-1,4,(3,3));
 		} else {
-			DrawString(trainingFont,String.Format("Chain %d", comboChain+1), (64,64),9,Font.CR_ICE,chainFade,-1,4,(2,2));
-			DrawString(trainingFont,String.Format("Hits: %d", comboLength), (72,86),9,Font.CR_LIGHTBLUE,chainFade,-1,4,(3,3));
+			DrawString(trainingFont,String.Format("Chain %d", comboChain+1), (64,64+48),9,Font.CR_ICE,chainFade,-1,4,(2,2));
+			DrawString(trainingFont,String.Format("Hits: %d", comboLength), (72,86+48),9,Font.CR_BRICK,chainFade,-1,4,(3,3));
 		}
 	}
 	
@@ -206,6 +206,15 @@ class BlankBar : BaseStatusBar {
 			comboChain = p1.combo.chain;
 
 		BeginHUD(1.0, true, 800, 600);
+		
+		// 		// Chain info
+		DrawChain(p1, false);
+		DrawChain(p2, true);
+		
+		// Character faces
+		DrawImage("textures/faces/AbbeyFace.resprite", (0,0), DI_SCREEN_LEFT_TOP|DI_ITEM_LEFT_TOP, 1, (-1,-1), (1.0,1.0));
+		DrawImage("textures/faces/AbbeyFace.resprite", (0,0), DI_SCREEN_RIGHT_TOP|DI_ITEM_RIGHT_TOP|DI_MIRROR, 1, (-1,-1), (1.0,1.0));
+		
 		DrawImage("textures/uibarsback.ase", (0, 60), DI_SCREEN_CENTER_TOP|DI_ITEM_LEFT_TOP, 1.0);
 		DrawImage("textures/uibarsback.ase", (0, 60), DI_SCREEN_CENTER_TOP|DI_ITEM_RIGHT_TOP|DI_MIRROR, 1.0);
 // 		DrawImage("textures/uibarsfront.ase", (enemyhealth*2-300, 62), DI_SCREEN_CENTER_TOP|DI_ITEM_LEFT_TOP, 1.0);
@@ -217,8 +226,23 @@ class BlankBar : BaseStatusBar {
 		Fill(color(255,255,255,0),0,62,enemyhealth * HPSCALE,23,DI_SCREEN_CENTER_TOP|DI_ITEM_LEFT_TOP);
 		Fill(color(255,255,128,0),-p1Health * HPSCALE,72,p1Health * HPSCALE,14,DI_SCREEN_CENTER_TOP|DI_ITEM_LEFT_TOP);
 		Fill(color(255,255,128,0),0,72,enemyhealth * HPSCALE,14,DI_SCREEN_CENTER_TOP|DI_ITEM_LEFT_TOP);
+		
+		// Supermeter
+		DrawImage("textures/MeterSplash.resprite", (10,-20), DI_SCREEN_LEFT_BOTTOM|DI_ITEM_LEFT_BOTTOM, 0.5,(-1,-1),(1,0.5));
+		DrawImage("textures/MeterSplash.resprite", (-10,-20), DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM|DI_MIRROR, 0.5,(-1,-1),(1,0.5));
+		
+		DrawImage("textures/uibarsback.ase", (10, 0), DI_SCREEN_LEFT_BOTTOM|DI_ITEM_LEFT_BOTTOM, 1.0, (-1,-1),(0.75,0.75));
+		DrawImage("textures/uibarsback.ase", (-10, 0), DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM|DI_MIRROR, 1.0, (-1,-1),(0.75,0.75));
+
+		float p1meter = 80;
+		Fill(color(255,167, 229, 216),12,-38,275*0.75-2,16,DI_SCREEN_LEFT_BOTTOM|DI_ITEM_LEFT_BOTTOM);
+		Fill(color(255,91, 156, 228),12,-26,275*0.75-2,4,DI_SCREEN_LEFT_BOTTOM|DI_ITEM_LEFT_BOTTOM);
+		
+		Fill(color(255,167, 229, 216),-12,-38,-275*0.75+2,16,DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM);
+		Fill(color(255,91, 156, 228),-12,-26,-275*0.75+2,4,DI_SCREEN_RIGHT_BOTTOM|DI_ITEM_RIGHT_BOTTOM);
 
 		DrawImage("textures/uieclipse.ase", (0, 20), DI_SCREEN_CENTER_TOP|DI_ITEM_TOP, 1.0);
+		DrawString(trainingFont, "99", (-26,67), DI_SCREEN_CENTER_TOP|DI_ITEM_TOP, Font.CR_ORANGE,1,-1,4,(3,3));
 		
 		// Round wins
 		if (p2rounds > 0)
@@ -230,15 +254,13 @@ class BlankBar : BaseStatusBar {
 		if (p1rounds > 1)
 			DrawImage("textures/roundicon.ase", (-60, 120), DI_SCREEN_CENTER_TOP|DI_ITEM_TOP, 1.0);
 
-// 		// Chain info
-		DrawChain(p1, false);
-		DrawChain(p2, true);
+
 		
 		// Round start/end
 		DrawScreenFX(p1.Health, p2.Health);
 		
 		// VERSION
-		DrawString(trainingFont, "'SUNLESS STRIKE' ALPHA PLAYTEST 8",(5,5));
+		DrawString(trainingFont, "'SUNLESS STRIKE' ALPHA PLAYTEST 8",(350,5));
 
 		int rollbackSequences = CVar.FindCVar("cl_debugrollback").GetInt();
 		if (rollbackSequences > 0) {
